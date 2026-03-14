@@ -1,4 +1,5 @@
 import { cn } from "@/components/utils/cn"
+import Link from "next/link"
 
 interface SidebarItemProps {
   icon: React.ElementType
@@ -16,8 +17,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   slug = '#',
 }) => {
   return (
-<a
-  href="javascript:void(0)"
+<Link
+  href={`${slug}`}
   className={cn(
     "group flex items-center rounded px-4 py-2 text-sm transition",
     active
@@ -42,7 +43,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   >
     {label}
   </span>
-</a>
+</Link>
   )
 }
 

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { cn } from "@/components/utils/cn"
 import SidebarItem from "@/components/ui/sidebar-item"
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 
 interface SidebarProps {
   className?: string
@@ -40,6 +41,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       <div className="relative border-b border-b-gray-700 px-4 py-3">
         <div className="flex items-center space-x-3">
           <Image
+          className='hover:cursor-pointer'
+          onClick={()=>redirect("/")}
           src="/logo-transparent.png"
           alt='halfstack logo'
           height={230}
