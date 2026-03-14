@@ -5,7 +5,7 @@ import React from "react";
 export const Navbar = () => {
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "Explore", path: "/" },
+    { name: "Explore", path: "/explore" },
     { name: "Latest", path: "/" },
   ];
 

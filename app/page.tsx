@@ -1,9 +1,11 @@
-import { Button } from "@/components/ui/button";
+import { Button, ButtonCustom } from "@/components/ui/button";
 import { Navbar } from "@/components/ui/Navbar";
 import { Globe, Handshake, LucideCircleArrowUp, User2 } from "lucide-react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 export default function Home() {
+
   return (
     <div className="flex flex-col min-h-screen w-full overflow-x-hidden bg-zinc-500 font-sans dark:bg-black">
       <div className="h-screen flex flex-col ">
@@ -38,12 +40,12 @@ const HeroSection = () => {
         <h3 className="text-xl">Ready to Explore/Create a stack?</h3>
       </div>
       <div className="justify-between items-center flex pt-6 gap-x-6 lg:gap-x-12">
-        <Button className="cursor-pointer hover:from-blue-400 p-4 hover:scale-105 hover:to-blue-600 hover:bg-linear-to-br rounded-2xl bg-white text-black">
+        <ButtonCustom link="explore" className="cursor-pointer hover:from-blue-400 p-4 hover:scale-105 hover:to-blue-600 hover:bg-linear-to-br rounded-2xl bg-white text-black">
           Explore
-        </Button>
-        <Button className="cursor-pointer hover:from-blue-400 p-4 hover:scale-105 hover:to-blue-600 hover:bg-linear-to-br rounded-2xl bg-white text-black">
+        </ButtonCustom>
+        <ButtonCustom link="#" className="cursor-pointer hover:from-blue-400 p-4 hover:scale-105 hover:to-blue-600 hover:bg-linear-to-br rounded-2xl bg-white text-black">
           Create a Stack
-        </Button>
+        </ButtonCustom>
       </div>
     </div>
   );
