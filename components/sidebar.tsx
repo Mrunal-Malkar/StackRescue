@@ -82,12 +82,12 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           />
           <div
             className={cn(
-              'ml-3 flex flex-col transition-opacity duration-200',
+              'ml-3 flex flex-col transition-opacity duration-200 overflow-x-auto',
               isCollapsed && 'hidden opacity-0',
             )}
           >
-            <span className="text-sm font-medium text-gray-300">John Doe</span>
-            <span className="text-xs text-gray-400">john@example.com</span>
+            <h3 className="text-sm font-medium text-gray-300">John Doe</h3>
+            <h4 className="text-xs text-gray-400 flex flex-wrap">john@example.com</h4>
           </div>
         </div>
 
