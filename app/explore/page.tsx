@@ -1,7 +1,8 @@
-import {ExploreStack} from "@/components/exploreStack";
+import { ExploreStack } from "@/components/exploreStack";
 import FilterComponent from "@/components/filtercomponent";
 import SearchBar from "@/components/searchbar";
 import Sidebar from "@/components/sidebar";
+import Image from "next/image";
 
 const Explore = () => {
   return (
@@ -10,14 +11,15 @@ const Explore = () => {
       <div className="w-full flex flex-col h-screen">
         <div className="flex-col w-full gap-y-1 flex items-center justify-center">
           <SearchBar />
-        <FilterComponent/>
+          <FilterComponent />
         </div>
         <div className="w-full flex flex-col h-full">
-        <ExploreStack />
+          <ExploreStack />
         </div>
       </div>
     </div>
   );
 };
+
 
 export default Explore;
