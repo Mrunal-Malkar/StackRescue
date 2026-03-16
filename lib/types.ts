@@ -5,3 +5,5 @@ export type StackCardType = {
   description: string;
   attributes: Array<stackAttributeType>;
 };
+
+export type InViewType="Posted"|"Collaborated"|"Completed"

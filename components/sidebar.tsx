@@ -74,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       {/* Footer/User Section */}
       <div className="mt-auto border-t border-t-gray-700">
         {/* User Profile */}
-        <div className="flex cursor-pointer items-center px-4 py-3 transition hover:bg-gray-600">
+        <div className="flex cursor-pointer items-center px-4 py-3 transition hover:bg-gray-600" onClick={()=>redirect("/profile/username")}>
           <img
             src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=32&h=32&fit=crop&crop=face"
             alt="John Doe"
