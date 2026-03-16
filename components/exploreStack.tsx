@@ -339,88 +339,162 @@ export const ExploreStack = () => {
       <div
         className={`backdrop-blur-xs bg-transparent p-2 sm:p-0 right-0 w-screen h-full bottom-0 flex justify-center items-center ${ShowStackModal ? "absolute" : "hidden"}`}
       >
-        <div className="h-11/12 sm:w-10/12 w-full bg-amber-500 rounded-2xl p-2 flex flex-col md:flex-row justify-center items-center">
-          <div className="w-full md:w-1/2 flex flex-col h-full bg-green-200  p-1 sm:p-2 md:p-4 overflow-y-auto no-scrollbar">
-            <div className="w-full">
-              <h1 className="text-3xl sm:text-3xl md:text-4xl font-semibold tracking-tight">
-                Project Title goes here
-              </h1>
-            </div>
-            <div className="w-full min-h-94 sm:min-h-[545px]">
-              <div className="w-full h-full bg-purple-800 rounded-2xl"></div>
-            </div>
-            <div className="w-full text-sm md:text-lg">
-              <p>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est
-                dicta nulla ipsam perspiciatis at consectetur asperiores
-                eligendi accusantium nobis maiores excepturi odio, reprehenderit
-                voluptate explicabo tenetur vitae officiis debitis. Molestiae.
-                Culpa sunt autem alias magnam quidem quae explicabo, nobis
-                accusamus, eius corporis cum fugiat tempore perspiciatis neque
-                sapiente minima repellat ex officiis rem sequi facilis eos
-                deserunt inventore. Obcaecati, cum? Quia, perspiciatis quaerat.
-                Enim nulla soluta beatae dolorum. Doloribus atque cupiditate
-                animi sequi molestiae, soluta ad iste doloremque totam numquam
-                porro autem repellat cum nesciunt earum dolorum aperiam ipsam
-                non? Possimus ipsam itaque, error earum impedit suscipit?
-                Laboriosam, veniam eius perferendis deleniti assumenda nemo
-                minima impedit consectetur dolor doloremque asperiores omnis
-                quia saepe placeat, soluta, voluptas quibusdam ratione
-                repellendus! Quas? Officia mollitia consequatur eum ratione vero
-                distinctio nam fuga tempora voluptatibus commodi hic, blanditiis
-                placeat voluptas? Exercitationem, delectus sapiente! Ducimus
-                corrupti voluptas sapiente excepturi quam sunt doloremque atque
-                id tempore. Perspiciatis assumenda quidem, ipsam pariatur culpa,
-                dolorem aperiam eaque odio repellat unde quae ducimus.
-                Doloremque blanditiis voluptatum facere, praesentium vitae
-                consequuntur, culpa eligendi veniam necessitatibus, officia
-                voluptas nihil laboriosam ex? Quos exercitationem unde,
-                quibusdam, ipsam deleniti rerum eaque omnis fugit soluta iure
-                quam dolorum, architecto voluptate atque officia eligendi nulla!
-                Architecto eos rerum corporis, error dolorem pariatur ducimus
-                incidunt vero? Aspernatur enim facere possimus numquam aperiam
-                nisi rerum alias debitis, ad magni, sit tenetur sunt vel fugiat
-                expedita deserunt perspiciatis porro, veniam eos officiis quas.
-                Officia atque distinctio architecto alias? Nam veritatis, magni
-                repudiandae adipisci ipsa id dolorum hic voluptas a. Officia
-                laboriosam molestiae deleniti corrupti facilis reprehenderit.
-                Reprehenderit iste earum, voluptatibus dolor tempore sequi quas
-                est et fuga aliquam. Labore asperiores, id voluptatibus
-                aspernatur architecto blanditiis impedit itaque obcaecati
-                deserunt placeat vero reprehenderit molestias repudiandae,
-                quidem porro sit sunt nisi, quo at? Id, quo ea fugiat
-                accusantium iure dicta. Facere illum quia non repudiandae
-                veritatis dolores eaque quas molestias, dolor est recusandae
-                quae eligendi quos omnis dolorum perspiciatis repellendus
-                eveniet, alias, tenetur architecto ad. Optio, neque vero.
-                Veniam, aspernatur! Reiciendis fuga dolor quidem veniam animi
-                aut nulla eveniet atque explicabo modi repudiandae magnam soluta
-                maiores veritatis autem, facilis excepturi cupiditate? Saepe
-                dolorem officia nam eos, nostrum sint ab rem! Qui aspernatur
-                provident corporis quod deleniti magni eligendi nihil vel culpa
-                minima, eius quo dolorum. Dolorum ex sapiente cumque ducimus,
-                minima molestiae veritatis id deleniti quas quia temporibus quae
-                alias. Odit, officiis! Voluptatem laboriosam non minima expedita
-                perferendis id ullam, sequi dolorum repudiandae est nemo nihil
-                consectetur? Beatae, commodi! Molestiae, non excepturi vel ab
-                mollitia vero nihil porro pariatur? Itaque? Laudantium rem quo,
-                odio temporibus autem dolor doloribus vero enim cumque repellat
-                sed expedita sit quasi voluptatum ipsum molestias cum obcaecati
-                est asperiores consectetur magnam, officiis unde quia. Dolor,
-                eligendi.
-              </p>
-            </div>
-          </div>
-          <div className="w-full md:w-1/2 flex flex-col justify-start h-full sm:p-3 md:p-6 bg-green-700 p-1 overflow-y-auto no-scrollbar">
-            {/** about the author */}
-            <div className="w-full flex flex-col">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
-                About the stack author,[the name goes here].
-              </h1>
-              {/* details */}
-            </div>
-            <div></div>
-          </div>
+        <div className="h-5/6 md:h-11/12 sm:w-10/12 w-full bg-amber-500 rounded-2xl p-2 flex flex-col md:flex-row overflow-y-auto md:overflow-y-hidden justify-center items-center">
+        <div className="w-full md:w-1/2 flex flex-col h-fit md:h-full bg-neutral-900 text-white p-2 sm:p-3 md:p-5 md:overflow-y-auto no-scrollbar">
+
+  {/* Title + quick metadata */}
+  <div className="w-full flex flex-col gap-3 pb-4 border-b border-neutral-700">
+
+    <h1 className="text-3xl sm:text-3xl md:text-4xl font-semibold tracking-tight">
+      Project Title Goes Here
+    </h1>
+
+    {/* quick info tags */}
+    <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
+      <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/30">
+        SaaS
+      </span>
+
+      <span className="px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/30">
+        70% Complete
+      </span>
+
+      <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/30">
+        Looking for collaborators
+      </span>
+    </div>
+
+  </div>
+
+  {/* Project preview image */}
+  <div className="w-full mt-6">
+
+    <div className="relative w-full min-h-[300px] sm:min-h-[420px] md:min-h-[520px] rounded-2xl overflow-hidden border border-neutral-700 bg-neutral-800">
+
+      {/* Replace this div with <Image /> later */}
+      <div className="absolute inset-0 flex items-center justify-center text-neutral-500 text-sm">
+        Project Screenshot Preview
+      </div>
+
+    </div>
+
+  </div>
+
+  {/* Description */}
+  <div className="w-full mt-6 flex flex-col gap-3">
+
+    <h2 className="text-lg font-semibold">
+      About this project
+    </h2>
+
+    <p className="text-sm md:text-base text-neutral-300 leading-relaxed">
+      This project is a SaaS analytics dashboard designed for indie builders
+      who want a simple way to monitor product usage, user growth, and revenue.
+      The authentication system and core UI are complete, while advanced
+      analytics modules and payment integration are still under development.
+      The goal is to ship a lightweight platform that helps small teams track
+      the health of their products without the complexity of enterprise tools.
+    </p>
+
+    <p className="text-sm md:text-base text-neutral-300 leading-relaxed">
+      The foundation is already stable, and the architecture supports scaling.
+      What remains is refining backend data pipelines, adding billing logic,
+      and polishing the user experience for production readiness.
+    </p>
+
+  </div>
+
+</div>
+          <div className="w-full md:w-1/2 flex flex-col h-fit justify-start md:h-full sm:p-3 md:p-6 bg-neutral-900 p-3 md:overflow-y-auto no-scrollbar text-white">
+
+  {/* About the author */}
+  <div className="w-full flex flex-col gap-4 border-b border-neutral-700 pb-6">
+
+    <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
+      About the stack author, <span className="text-sky-400">Alex Carter</span>
+    </h1>
+
+    <div className="flex items-center gap-4">
+      <img
+        src="/avatar.png"
+        alt="author"
+        className="w-14 h-14 rounded-full object-cover border border-neutral-700"
+      />
+
+      <div className="flex flex-col">
+        <p className="text-sm text-neutral-300">
+          Full-stack developer who started building this SaaS dashboard for indie founders.
+        </p>
+        <span className="text-xs text-neutral-500">
+          4 years experience • React / Node
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  {/* Why the project is incomplete */}
+  <div className="flex flex-col gap-2 pt-6 border-b border-neutral-700 pb-6">
+    <h2 className="text-lg font-semibold">Why this project is incomplete</h2>
+    <p className="text-sm text-neutral-300 leading-relaxed">
+      I started building this analytics SaaS but had to pause due to a new job
+      and lack of backend scaling experience. The UI and authentication flow
+      are complete, but advanced analytics and payment integration are pending.
+    </p>
+  </div>
+
+  {/* What he is looking for */}
+  <div className="flex flex-col gap-3 pt-6 border-b border-neutral-700 pb-6">
+    <h2 className="text-lg font-semibold">Looking for</h2>
+
+    <div className="flex flex-wrap gap-2">
+      <span className="px-3 py-1 text-sm rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/30">
+        Frontend Developer
+      </span>
+
+      <span className="px-3 py-1 text-sm rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/30">
+        Backend Developer
+      </span>
+
+      <span className="px-3 py-1 text-sm rounded-full bg-green-500/10 text-green-400 border border-green-500/30">
+        Co-builder
+      </span>
+    </div>
+  </div>
+
+  {/* Expectations */}
+  <div className="flex flex-col gap-3 pt-6 border-b border-neutral-700 pb-6">
+    <h2 className="text-lg font-semibold">Expectations from collaborators</h2>
+
+    <ul className="text-sm text-neutral-300 list-disc list-inside space-y-1">
+      <li>Good communication and collaboration</li>
+      <li>Experience with modern web stacks</li>
+      <li>Ability to ship features independently</li>
+      <li>Interest in finishing and launching the product</li>
+    </ul>
+  </div>
+
+  {/* Tools used */}
+  <div className="flex flex-col gap-3 pt-6">
+    <h2 className="text-lg font-semibold">Tools used in the project</h2>
+
+    <div className="flex flex-wrap gap-2">
+      <span className="px-3 py-1 text-sm rounded-full bg-neutral-800 border border-neutral-700">
+        #nextjs
+      </span>
+      <span className="px-3 py-1 text-sm rounded-full bg-neutral-800 border border-neutral-700">
+        #mongodb
+      </span>
+      <span className="px-3 py-1 text-sm rounded-full bg-neutral-800 border border-neutral-700">
+        #tailwind
+      </span>
+      <span className="px-3 py-1 text-sm rounded-full bg-neutral-800 border border-neutral-700">
+        #figma
+      </span>
+    </div>
+  </div>
+
+</div>
         </div>
       </div>
     </div>
