@@ -1,16 +1,20 @@
+import {ExploreStack} from "@/components/exploreStack";
 import FilterComponent from "@/components/filtercomponent";
 import SearchBar from "@/components/searchbar";
 import Sidebar from "@/components/sidebar";
 
 const Explore = () => {
   return (
-    <div className="sm:w-screen min-h-screen flex bg-black text-white">
+    <div className="sm:w-screen min-h-screen flex overflow-hidden bg-black text-white">
       <Sidebar />
-      <div className="w-full flex flex-col h-full">
-        <div className="w-full p-4 flex items-center justify-center">
+      <div className="w-full flex flex-col h-screen">
+        <div className="flex-col w-full gap-y-1 flex items-center justify-center">
           <SearchBar />
-        </div>
         <FilterComponent/>
+        </div>
+        <div className="w-full flex flex-col h-full">
+        <ExploreStack />
+        </div>
       </div>
     </div>
   );

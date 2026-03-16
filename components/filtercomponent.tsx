@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 
 import {
@@ -88,13 +106,13 @@ const FilterComponent = () => {
         <div
           className={`backdrop-blur-xs bg-transparent right-0 w-screen h-full bottom-0 flex justify-center items-center ${ShowFilter ? "absolute" : "hidden"}`}
         >
-          <div className="bg-linear-to-br to-gray-900 from-gray-800 rounded-2xl w-[90%] sm:w-xl xl:w-md text-gray-300 flex flex-col">
+          <div className="border-2 border-gray-700 bg-linear-to-br to-gray-900 from-gray-800 rounded-2xl w-[90%] sm:w-xl xl:w-md text-gray-300 flex flex-col">
             <div className="w-full pr-4 pl-4 pt-4">
               <div className="w-full flex justify-between items-center">
                 <h2 className="text-xl">Filters</h2>
                 <X onClick={() => setShowFilter(false)} className="hover:cursor-pointer" size={28} />
               </div>
-              <div className="border-b-2 p-1 border-gray-700 h-2/6 rounded-2xl"></div>
+              <div className="bg-gray-600 w-2/6 self-center h-0.5 rounded-2xl mt-0.5"></div>
             </div>
             <div className="flex flex-wrap w-full pr-4 pl-4 pt-4 pb-4 max-h-64 overflow-y-auto">
               <button className="rounded-2xl from-gray-800 to-gray-950 bg-linear-to-br text-gray-300 p-2 text-center px-2.5">
@@ -127,9 +145,9 @@ const FilterComponent = () => {
             </div>
             <div 
                 onClick={() => handleFilterSubmit()}
-            className="hover:to-blue-700 cursor-pointer w-full flex justify-center p-3 rounded-b-2xl items-center from-blue-500 to-blue-600 bg-linear-to-br">
+            className="hover:to-blue-700 cursor-pointer w-full flex justify-center p-3 border-t-2 border-gray-700 rounded-b-2xl items-center from-blue-500 to-blue-600 bg-linear-to-br">
               <button
-                className="text-lg text-gray-200"
+                className="text-lg hover:cursor-pointer text-gray-200"
               >
                 Apply
               </button>

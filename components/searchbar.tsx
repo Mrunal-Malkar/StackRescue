@@ -2,7 +2,7 @@
 
 const SearchBar = () => {
   return (
-    <div className="flex rounded-lg border-2 border-transparent hover:border-blue-600 focus-within:border-blue-600 overflow-hidden w-full lg:w-3xl xl:w-5xl">
+    <div className="flex m-3 mt-4 rounded-lg border-2 border-transparent hover:border-blue-600 focus-within:border-blue-600 overflow-hidden w-full lg:w-3xl xl:w-5xl">
       <input
         type="text"
         placeholder="Search Stack..."
