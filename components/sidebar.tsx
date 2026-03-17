@@ -20,8 +20,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const menuItems = [
     { icon: Home, label: 'Home', active: false, slug: '/' },
     { icon: LayoutDashboard, label: 'Explore', active: true, slug: '/explore' },
-    { icon: Lightbulb, label: 'Idea stack', active: false, slug: '/create#idea' },
-    { icon: Code, label: 'Project stack', active: false, slug: '/create#project' },
+    { icon: Lightbulb, label: 'Idea stack', active: false, slug: '/create?stack=idea' },
+    { icon: Code, label: 'Project stack', active: false, slug: '/create?stack=project' },
   ]
 
   const userActions = [

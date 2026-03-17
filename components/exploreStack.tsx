@@ -2,7 +2,6 @@
 import { StackCardType } from "@/lib/types";
 import { X } from "lucide-react";
 import React, { useState } from "react";
-import { Navbar } from "./ui/Navbar";
 import Image from "next/image";
 
 export const ExploreStack = () => {
