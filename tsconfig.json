@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/profile/[slug].js"  ],
+, "app/profile/[slug].js", "app/db/connectDb.ts"  ],
   "exclude": ["node_modules"]
 }

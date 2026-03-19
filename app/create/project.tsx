@@ -95,9 +95,7 @@ export default function CreateProjectPage() {
               <div className="space-y-6">
                 {[
                   { label: "UI / UX", color: "accent-indigo-500" },
-                  { label: "Backend Architecture", color: "accent-emerald-500" },
-                  { label: "Authentication", color: "accent-purple-500" },
-                  { label: "Payments / Stripe", color: "accent-blue-500" }
+                  { label: "Backend", color: "accent-emerald-500" }
                 ].map((item, i) => (
                   <div key={i} className="space-y-3">
                     <div className="flex justify-between text-sm font-medium">
@@ -128,7 +126,7 @@ export default function CreateProjectPage() {
                   <div className="relative">
                     <input 
                       type="text" 
-                      placeholder="Required Skills (React, Go...)"
+                      placeholder="required role:frontend developer,backend developer"
                       className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 pr-12 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                     />
                     <Plus className="absolute right-4 top-4 text-neutral-500 w-5 h-5" />
@@ -139,7 +137,7 @@ export default function CreateProjectPage() {
               <div className="bg-neutral-900/30 border border-neutral-800 rounded-3xl p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <HelpCircle className="w-5 h-5 text-amber-400" />
-                  <h2 className="text-lg font-bold">Why the hiatus?</h2>
+                  <h2 className="text-lg font-bold">Why you left project in between?</h2>
                 </div>
                 <textarea 
                   rows={3} 

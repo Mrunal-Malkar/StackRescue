@@ -1,5 +1,5 @@
 "use client";
-import { StackCardType } from "@/lib/types";
+import { StackCardType } from "@/type/types";
 import { X } from "lucide-react";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -302,14 +302,14 @@ export const ExploreStack = () => {
   }
 
   return (
-    <div className="w-full h-full overflow-y-auto text-black p-2 sm:p-6 justify-start gap-6  flex flex-wrap">
+    <div className="w-full h-full overflow-y-auto text-black p-2 sm:p-6 justify-around gap-6 gap-y-16  flex flex-wrap">
       {/* stack cards */}
       {stacks.map((item, i) => {
         return (
           <div
             key={i}
             onClick={() => showStack(item)}
-            className="group flex flex-col justify-between p-4 md:w-96 bg-neutral-900 hover:bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all duration-200 cursor-pointer"
+            className="group flex flex-col justify-between p-4 md:w-1/2 h-1/3 bg-neutral-900 hover:bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all duration-200 cursor-pointer"
           >
             {/* Title */}
             <div className="flex flex-col gap-2">

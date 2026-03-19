@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Sidebar from "../../../components/sidebar";
-import { InViewType } from "../../../lib/types";
+import { InViewType } from "../../../type/types";
 
 const Page = () => {
   const [InView, setInView] = useState<InViewType>("Posted");
