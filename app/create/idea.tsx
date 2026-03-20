@@ -9,22 +9,22 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
 
 const Idea = () => {
   type Input = {
     title: string;
     description: string;
-    teamSkills: string;
-    categories: string;
-    image: File[];
+    image: FileList;
+    catagories: string;
+    roles: string;
   };
 
+  const acceptedTypes=["image/png","image/jpeg","image/jpg"]
   const [roleInput, setRoleInput] = useState("");
   const [roles, setRoles] = useState<string[]>([]);
   const [catagoryInput, setCatagoryInput] = useState("");
   const [catagories, setCatagories] = useState<string[]>([]);
-
   const [PreviewImageUrl, setPreviewImageUrl] = useState<string>("");
   const {
     register,
@@ -32,9 +32,17 @@ const Idea = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Input>();
+
+  const{ref,onChange,...rest}=register("image",{
+  validate:{
+    isJpegPng:(files)=>acceptedTypes.includes(files[0]?.type) || "file type not accepted",
+    maxSize:  (files)=>files[0]?.size<3_097_152 || "max size 3MB"
+  }  
+  })
+
   const onSubmit: SubmitHandler<Input> = (data) => {
-    const allData=[...catagories,...roles,data];
-    console.log(allData)
+    alert("yo");
+    const allData = { ...data, catagories, roles };
   };
 
   function handleAddRole(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -50,6 +58,7 @@ const Idea = () => {
 
   function handleAddCatagory(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
+      e.preventDefault();
       if (catagoryInput.trim() && !catagories.includes(catagoryInput.trim())) {
         setCatagories([...catagories, catagoryInput.trim()]);
         setCatagoryInput("");
@@ -88,15 +97,22 @@ const Idea = () => {
                 blueprint, find your co-founders, and start building.
               </p>
             </div>
-            <button className="hidden md:flex items-center gap-3 px-10 py-5 bg-cyan-500 hover:bg-cyan-400 text-black font-black rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+            <button
+              type="submit"
+              form="idea-form"
+              className="hidden md:flex items-center gap-3 px-10 py-5 bg-cyan-500 hover:bg-cyan-400 text-black font-black rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(6,182,212,0.3)]"
+            >
               LAUNCH CONCEPT <ArrowUpRight className="w-5 h-5" />
             </button>
           </header>
 
           <form
+            id="idea-form"
             onSubmit={handleSubmit(onSubmit)}
             className="grid grid-cols-1 md:grid-cols-12 gap-10"
           >
+            <input type="hidden" {...register("catagories", { validate: () => catagories.length > 0 || "At least one category is required" })} />
+            <input type="hidden" {...register("roles", { validate: () => roles.length > 0 || "At least one role is required" })} />
             {/* LEFT COLUMN: THE CONCEPTUAL CORE */}
             <div className="md:col-span-8 space-y-10">
               {/* LARGE TITLE INPUT */}
@@ -106,10 +122,15 @@ const Idea = () => {
                 </label>
                 <input
                   type="text"
-                  {...register("title")}
+                  {...register("title", { required: "Title is required" })}
                   placeholder="The 'Uber' for Open Source Maintenance..."
                   className="w-full bg-transparent border-2 border-slate-800 rounded-3xl p-8 text-3xl md:text-4xl font-bold text-white focus:border-cyan-500 outline-none transition-all placeholder:text-slate-800"
                 />
+                {errors.title && (
+                  <p className="text-sm text-red-400 mt-1">
+                    {errors.title.message?.toString()}
+                  </p>
+                )}
               </div>
 
               {/* DESCRIPTION BOX */}
@@ -118,11 +139,16 @@ const Idea = () => {
                   THE MANIFESTO
                 </label>
                 <textarea
-                  {...register("description")}
+                  {...register("description", { required: "Description is required" })}
                   rows={10}
                   placeholder="Describe the spark, the problem, and the dream..."
                   className="w-full bg-slate-900/20 backdrop-blur-sm border-2 border-slate-800 rounded-[2rem] p-8 text-lg leading-relaxed focus:border-purple-500 outline-none transition-all placeholder:text-slate-800 resize-none"
                 />
+                {errors.description && (
+                  <p className="text-sm text-red-400 mt-1">
+                    {errors.description.message?.toString()}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -157,15 +183,11 @@ const Idea = () => {
                   </p>
                   <input
                     type="file"
-                    {...register("image", {
-                      validate: {
-                        fileType: (files) =>
-                          ["image/jpeg", "image/png"].includes(
-                            files[0]?.type,
-                          ) || "Only JPG/PNG allowed",
-                      },
-                    })}
+                     accept=".png,.jpg,.jpeg"
+                    ref={ref}
+                    {...rest}
                     onChange={(e) => {
+                      onChange(e);
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
                         setPreviewImageUrl(URL.createObjectURL(file));
@@ -173,6 +195,11 @@ const Idea = () => {
                     }}
                     className="hidden"
                   />
+                  {errors.image && (
+                    <p className="text-sm text-red-400 mt-1">
+                      {errors.image.message?.toString()}
+                    </p>
+                  )}
                 </label>
               </div>
 
@@ -194,7 +221,9 @@ const Idea = () => {
                       <button
                         type="button"
                         onClick={() =>
-                          setCatagories(catagories.filter((_, idx) => idx !== i))
+                          setCatagories(
+                            catagories.filter((_, idx) => idx !== i),
+                          )
                         }
                         className="text-red-400"
                       >
@@ -223,6 +252,11 @@ const Idea = () => {
                     </span>
                   ))}
                 </div>
+                {errors.catagories && (
+                  <p className="text-sm text-red-400 mt-2">
+                    {errors.catagories.message?.toString()}
+                  </p>
+                )}
               </div>
 
               {/* REQUIRED SKILLS */}
@@ -261,6 +295,11 @@ const Idea = () => {
                     className="flex-1 bg-transparent outline-none text-sm p-2"
                   />
                 </div>
+                {errors.roles && (
+                  <p className="text-sm text-red-400 mt-2">
+                    {errors.roles.message?.toString()}
+                  </p>
+                )}
               </div>
 
               {/* MOBILE ONLY SUBMIT */}

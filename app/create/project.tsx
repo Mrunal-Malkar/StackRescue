@@ -7,18 +7,20 @@ import {
   Target,
   UploadCloud,
 } from "lucide-react";
-import { convertServerPatchToFullTree } from "next/dist/client/components/segment-cache/navigation";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type Input = {
   title: string;
   description: string;
-  range: number;
-  requiredRoles: string[];
+  uiuxProgress: number;
+  backendProgress: number;
+  requiredRoles: string;
   reasonForLeavingProject: string;
-  image: File[];
+  image: FileList;
+  catagories: string[];
+  projectType:string;
+  roles: string[];
 };
 
 export default function CreateProjectPage() {
@@ -26,15 +28,86 @@ export default function CreateProjectPage() {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
-  } = useForm<Input>();
+  } = useForm<Input>({
+    defaultValues: {
+      uiuxProgress: 0,
+      backendProgress: 0,
+      catagories: [],
+      roles: [],
+    },
+  });
 
+  
+  const acceptedTypes=["image/png","image/jpg","image/jpeg"]
   const [PreviewImageUrl, setPreviewImageUrl] = useState<string>("");
+  const [roleInput, setRoleInput] = useState("");
+  const [roles, setRoles] = useState<string[]>([]);
+  const [catagoryInput, setCatagoryInput] = useState("");
+  const [catagories, setCatagories] = useState<string[]>([]);
 
-  const onSubmit: SubmitHandler<Input> = (data) => {};
-  useEffect(() => {
-    console.log("the preview image url is", PreviewImageUrl);
-  }, [PreviewImageUrl]);
+  const uiuxProgress = watch("uiuxProgress");
+  const backendProgress = watch("backendProgress");
+
+  const {ref,onChange,...rest}=register("image",{
+    required:"Image is required",
+    validate:{
+      isJpgPng:(files)=>acceptedTypes.includes(files[0]?.type)|| "Only JPG/PNG images are allowed",
+      maxSize:(files)=>files[0]?.size<=3*1024*1024 || "Max file size is 3MB",
+    }
+  })
+
+  // function ValidateImageType(fileList: FileList) {
+  //   if (fileList.length > 0) {
+  //     return "only one image upload allowed";
+  //   } else if (fileList.length == 0) {
+  //     null;
+  //   } else {
+  //     return "image is required";
+  //   }
+  //   // alert(fileList[0].type);
+
+  //   const acceptedTypes = ["image/jpeg", "image/png"];
+  //   const fileType = fileList[0]?.type;
+  //   if (acceptedTypes.includes(fileType)) {
+  //     return true;
+  //   } else {
+  //     return "only png/jpeg image allowed";
+  //   }
+  // }
+
+  function handleAddRole(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newRole = roleInput.trim();
+      if (newRole && !roles.includes(newRole)) {
+        setRoles([...roles, newRole]);
+        setRoleInput("");
+      }
+    }
+  }
+
+  function handleAddCatagory(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newCat = catagoryInput.trim();
+      if (newCat && !catagories.includes(newCat)) {
+        setCatagories([...catagories, newCat]);
+        setCatagoryInput("");
+      }
+    }
+  }
+
+  const onSubmit: SubmitHandler<Input> = (data) => {
+    const formData={...data,roles,catagories};
+    setPreviewImageUrl("");
+    setRoles([]);
+    setCatagories([]);
+    setRoleInput("");
+    setCatagoryInput("");
+    reset();
+  };
 
   return (
     <div className="h-screen w-screen flex">
@@ -66,7 +139,11 @@ export default function CreateProjectPage() {
               </p>
             </div>
             <div className="hidden md:block">
-              <button className="group relative px-8 py-4 bg-linear-to-br from-blue-500 to-indigo-600 text-white/80 hover:cursor-pointer font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]">
+              <button
+                type="submit"
+                form="project-form"
+                className="group relative px-8 py-4 bg-linear-to-br from-blue-500 to-indigo-600 text-white/80 hover:cursor-pointer font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
                 <span className="relative z-10 flex items-center gap-2">
                   <Rocket className="w-5 h-5" />
                   Publish Project
@@ -76,6 +153,7 @@ export default function CreateProjectPage() {
           </header>
 
           <form
+            id="project-form"
             className="grid grid-cols-1 md:grid-cols-12 gap-8"
             onSubmit={handleSubmit(onSubmit)}
           >
@@ -84,13 +162,13 @@ export default function CreateProjectPage() {
               {/* IMAGE UPLOAD BOX */}
               <section className="group relative bg-neutral-900/50 border border-neutral-800 rounded-3xl p-2 transition-all hover:border-indigo-500/50">
                 <label
-                  className={`relative flex flex-col items-center justify-center w-full h-[400px] ${!PreviewImageUrl?"bg-neutral-950/50":null} rounded-[1.4rem] border-2 border-dashed border-neutral-800 group-hover:bg-indigo-500/5 transition-all cursor-pointer overflow-hidden`}
+                  className={`relative flex flex-col items-center justify-center w-full h-[400px] ${!PreviewImageUrl ? "bg-neutral-950/50" : null} rounded-[1.4rem] border-2 border-dashed border-neutral-800 group-hover:bg-indigo-500/5 transition-all cursor-pointer overflow-hidden`}
                   style={
                     PreviewImageUrl
                       ? {
                           backgroundImage: `url(${PreviewImageUrl})`,
-                          backgroundSize:"contain",
-                          backgroundRepeat:"no-repeat",
+                          backgroundSize: "contain",
+                          backgroundRepeat: "no-repeat",
                           backgroundPosition: "center",
                         }
                       : {}
@@ -110,22 +188,26 @@ export default function CreateProjectPage() {
                     </div>
                   </div>
                   <input
-                      {...register("image", {
-    validate: {
-      fileType: (files) =>
-        ["image/jpeg", "image/png"].includes(files[0]?.type) ||
-        "Only JPG/PNG allowed",
-    },
-  })}
+                    {...register("image")}
+                    ref={ref}
+                    {...rest}
                     type="file"
+                    accept=".png,.jpg,jpeg"
                     onChange={(e) => {
+                      onChange(e);
                       const file = e.target.files ? e.target.files[0] : null;
+                      console.log("selected file type",file?.type)
                       if (file) {
                         setPreviewImageUrl(URL.createObjectURL(file));
                       }
                     }}
                     className="hidden"
                   />
+                  {errors.image && (
+                    <p className="text-sm text-red-400 mt-2">
+                      {errors.image.message?.toString()}
+                    </p>
+                  )}
                 </label>
               </section>
 
@@ -136,11 +218,16 @@ export default function CreateProjectPage() {
                     Project Title
                   </label>
                   <input
-                    {...register("title")}
+                    {...register("title", { required: "Title is required" })}
                     type="text"
                     placeholder="e.g. Quantum Ledger AI"
                     className="w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-4 text-xl font-semibold focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-neutral-700"
                   />
+                  {errors.title && (
+                    <p className="text-sm text-red-400 mt-1">
+                      {errors.title.message?.toString()}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -148,11 +235,18 @@ export default function CreateProjectPage() {
                     Description
                   </label>
                   <textarea
-                    {...register("description")}
+                    {...register("description", {
+                      required: "Description is required",
+                    })}
                     rows={6}
                     placeholder="What is the problem? How does this solve it?"
                     className="w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-neutral-700 resize-none"
                   />
+                  {errors.description && (
+                    <p className="text-sm text-red-400 mt-1">
+                      {errors.description.message?.toString()}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -169,22 +263,33 @@ export default function CreateProjectPage() {
                 </div>
 
                 <div className="space-y-6">
-                  {[
-                    { label: "UI / UX", color: "accent-indigo-500" },
-                    { label: "Backend", color: "accent-emerald-500" },
-                  ].map((item, i) => (
-                    <div key={i} className="space-y-3">
-                      <div className="flex justify-between text-sm font-medium">
-                        <span className="text-neutral-400">{item.label}</span>
-                        <span className="text-white">65%</span>
-                      </div>
-                      <input
-                        {...register("range")}
-                        type="range"
-                        className={`w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer ${item.color}`}
-                      />
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm font-medium">
+                      <span className="text-neutral-400">UI / UX</span>
+                      <span className="text-white">{uiuxProgress}%</span>
                     </div>
-                  ))}
+                    <input
+                      {...register("uiuxProgress", { valueAsNumber: true })}
+                      type="range"
+                      min={0}
+                      max={100}
+                      className="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm font-medium">
+                      <span className="text-neutral-400">Backend</span>
+                      <span className="text-white">{backendProgress}%</span>
+                    </div>
+                    <input
+                      {...register("backendProgress", { valueAsNumber: true })}
+                      type="range"
+                      min={0}
+                      max={100}
+                      className="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    />
+                  </div>
                 </div>
               </section>
 
@@ -197,21 +302,81 @@ export default function CreateProjectPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <select className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 font-medium appearance-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                    <select {...register("projectType", { required: "Project type is required" })} className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 font-medium appearance-none focus:ring-2 focus:ring-indigo-500 transition-all">
                       <option>SaaS Model</option>
                       <option>Open Source</option>
                       <option>Startup Prototype</option>
                     </select>
+                    {errors.projectType && (
+                      <p className="text-sm text-red-400 mt-1">
+                        {errors.projectType.message?.toString()}
+                      </p>
+                    )}
 
-                    <div className="relative">
+                    <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 flex flex-wrap gap-2">
+                      {catagories.map((cat, i) => (
+                        <span
+                          key={`cat-${i}`}
+                          className="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-lg text-sm flex items-center gap-2"
+                        >
+                          {cat}
+                          <button
+                            type="button"
+                            onClick={() => setCatagories(catagories.filter((_, idx) => idx !== i))}
+                            className="text-red-400"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
                       <input
-                        {...register("requiredRoles")}
+                        value={catagoryInput}
+                        onChange={(e) => setCatagoryInput(e.target.value)}
+                        onKeyDown={handleAddCatagory}
+                        placeholder="Add category and press Enter"
+                        className="flex-1 bg-transparent outline-none text-sm p-2"
+                      />
+                    </div>
+
+                    <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 flex flex-wrap gap-2">
+                      {roles.map((role, i) => (
+                        <span
+                          key={`role-${i}`}
+                          className="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-lg text-sm flex items-center gap-2"
+                        >
+                          {role}
+                          <button
+                            type="button"
+                            onClick={() => setRoles(roles.filter((_, idx) => idx !== i))}
+                            className="text-red-400"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
+                      <input
+                        value={roleInput}
+                        onChange={(e) => setRoleInput(e.target.value)}
+                        onKeyDown={handleAddRole}
+                        placeholder="Add role and press Enter"
+                        className="flex-1 bg-transparent outline-none text-sm p-2"
+                      />
+                    </div>
+
+                    {/* <div className="relative">
+                      <input
+                        {...register("requiredRoles", { required: "Required roles is required" })}
                         type="text"
                         placeholder="required role:frontend developer,backend developer"
                         className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 pr-12 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                       />
                       <Plus className="absolute right-4 top-4 text-neutral-500 w-5 h-5" />
-                    </div>
+                      {errors.requiredRoles && (
+                        <p className="text-sm text-red-400 mt-1">
+                          {errors.requiredRoles.message?.toString()}
+                        </p>
+                      )}
+                    </div> */}
                   </div>
                 </div>
 
@@ -223,11 +388,16 @@ export default function CreateProjectPage() {
                     </h2>
                   </div>
                   <textarea
-                    {...register("reasonForLeavingProject")}
+                    {...register("reasonForLeavingProject", { required: "Reason is required" })}
                     rows={3}
                     placeholder="e.g. Burnout, hit a technical wall, or moved to a new city..."
                     className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-neutral-700 italic"
                   />
+                  {errors.reasonForLeavingProject && (
+                    <p className="text-sm text-red-400 mt-1">
+                      {errors.reasonForLeavingProject.message?.toString()}
+                    </p>
+                  )}
                 </div>
               </section>
             </div>
