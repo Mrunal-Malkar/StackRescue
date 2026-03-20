@@ -1,7 +1,25 @@
 import Sidebar from '@/components/sidebar';
-import { Lightbulb, Image as ImageIcon, Hash, Cpu, Sparkles, Send, Plus, ArrowUpRight } from 'lucide-react';
+import { Image as ImageIcon, Hash, Cpu, Sparkles, Send, Plus, ArrowUpRight } from 'lucide-react';
+import { useState } from 'react';
+import { useForm,SubmitHandler } from 'react-hook-form';
 
-const Idea=()=>{  return (
+const Idea=()=>{  
+  
+  type Input={
+    title:string,
+    description:string,
+    teamSkills:string,
+    categories:string,
+    file:string,
+  }
+
+  const [PreviewImageUrl, setPreviewImageUrl] = useState<string>("");
+  const{register,watch,handleSubmit,formState:{errors}}=useForm<Input>();
+  const onSubmit:SubmitHandler<Input>=(data)=>{
+console.log(data);
+  }
+  
+  return (
     <div className='w-screen h-screen flex'>
         <Sidebar/>
     <div className="w-full min-h-screen overflow-y-auto bg-[#020617] text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-200 font-sans antialiased">
@@ -35,7 +53,7 @@ const Idea=()=>{  return (
           </button>
         </header>
 
-        <form className="grid grid-cols-1 md:grid-cols-12 gap-10">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-12 gap-10">
           
           {/* LEFT COLUMN: THE CONCEPTUAL CORE */}
           <div className="md:col-span-8 space-y-10">
@@ -44,7 +62,7 @@ const Idea=()=>{  return (
             <div className="relative group">
               <label className="absolute -top-3 left-6 px-2 bg-[#020617] text-cyan-500 text-xs font-bold tracking-widest z-10">IDEA TITLE</label>
               <input 
-                type="text" 
+                type="text" {...register("title")}
                 placeholder="The 'Uber' for Open Source Maintenance..."
                 className="w-full bg-transparent border-2 border-slate-800 rounded-3xl p-8 text-3xl md:text-4xl font-bold text-white focus:border-cyan-500 outline-none transition-all placeholder:text-slate-800"
               />
@@ -53,7 +71,7 @@ const Idea=()=>{  return (
             {/* DESCRIPTION BOX */}
             <div className="relative group">
               <label className="absolute -top-3 left-6 px-2 bg-[#020617] text-purple-500 text-xs font-bold tracking-widest z-10">THE MANIFESTO</label>
-              <textarea 
+              <textarea {...register("description")}
                 rows={10} 
                 placeholder="Describe the spark, the problem, and the dream..."
                 className="w-full bg-slate-900/20 backdrop-blur-sm border-2 border-slate-800 rounded-[2rem] p-8 text-lg leading-relaxed focus:border-purple-500 outline-none transition-all placeholder:text-slate-800 resize-none"
@@ -65,17 +83,32 @@ const Idea=()=>{  return (
           <div className="md:col-span-4 space-y-8">
             
             {/* VISUAL ASSET UPLOAD */}
-            <div className="bg-slate-900/40 border border-slate-800 rounded-[2.5rem] p-6 space-y-4">
+            <div className="bg-slate-900/40 border border-slate-800 rounded-[2.5rem] p-6 space-y-4" >
                <div className="flex items-center gap-3 text-slate-400 px-2">
                 <ImageIcon className="w-5 h-5" />
                 <span className="text-sm font-bold uppercase tracking-wider">Concept Art / UI</span>
               </div>
-              <label className="flex flex-col items-center justify-center w-full h-64 bg-slate-950/50 rounded-[2rem] border-2 border-dashed border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all cursor-pointer group">
+              <label
+              style={
+                    PreviewImageUrl
+                      ? {
+                          backgroundImage: `url(${PreviewImageUrl})`,
+                          backgroundSize:"contain",
+                          backgroundRepeat:"no-repeat",
+                          backgroundPosition: "center",
+                        }
+                      : {}
+                  } className="flex flex-col items-center justify-center w-full h-64 bg-slate-950/50 rounded-[2rem] border-2 border-dashed border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all cursor-pointer group">
                 <div className="p-4 rounded-full bg-slate-900 group-hover:scale-110 transition-transform">
                   <Plus className="w-6 h-6 text-cyan-500" />
                 </div>
-                <p className="mt-4 text-xs font-medium text-slate-500">Upload a moodboard or wireframe</p>
-                <input type="file" className="hidden" />
+                <p className="mt-4 text-xs font-medium text-slate-500">you can generate image from llm and upload it here.</p>
+                <input type="file" {...register("file")}  onChange={(e) => {
+                      const file = e.target.files ? e.target.files[0] : null;
+                      if (file) {
+                        setPreviewImageUrl(URL.createObjectURL(file));
+                      }
+                    }} className="hidden" />
               </label>
             </div>
 
@@ -86,7 +119,7 @@ const Idea=()=>{  return (
                 <span className="text-sm font-bold uppercase tracking-wider">Categories</span>
               </div>
               <input 
-                type="text" 
+                type="text" {...register("categories")}
                 placeholder="Press enter to add..."
                 className="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-4 focus:border-cyan-500 outline-none transition-all"
               />
@@ -106,7 +139,7 @@ const Idea=()=>{  return (
                 <span className="text-sm font-bold uppercase tracking-wider">Dream Team Skills</span>
               </div>
               <div className="space-y-3">
-                <input 
+                <input {...register("teamSkills")}
                   type="text" 
                   placeholder="Who do you need? (e.g. Three.js Wizard)"
                   className="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-4 focus:border-purple-500 outline-none transition-all"
@@ -120,7 +153,7 @@ const Idea=()=>{  return (
             </div>
 
             {/* MOBILE ONLY SUBMIT */}
-            <button className="md:hidden w-full py-6 bg-cyan-500 text-black font-black rounded-[2rem] flex items-center justify-center gap-3">
+            <button type='submit' className="md:hidden w-full py-6 bg-cyan-500 text-black font-black rounded-[2rem] flex items-center justify-center gap-3">
               LAUNCH IDEA <Send className="w-5 h-5" />
             </button>
           </div>
