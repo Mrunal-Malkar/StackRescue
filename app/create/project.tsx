@@ -18,7 +18,7 @@ type Input = {
   range: number;
   requiredRoles: string[];
   reasonForLeavingProject: string;
-  image: string;
+  image: File[];
 };
 
 export default function CreateProjectPage() {
@@ -110,7 +110,13 @@ export default function CreateProjectPage() {
                     </div>
                   </div>
                   <input
-                    {...register("image")}
+                      {...register("image", {
+    validate: {
+      fileType: (files) =>
+        ["image/jpeg", "image/png"].includes(files[0]?.type) ||
+        "Only JPG/PNG allowed",
+    },
+  })}
                     type="file"
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
