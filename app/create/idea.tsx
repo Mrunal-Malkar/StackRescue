@@ -1,4 +1,5 @@
 import Sidebar from "@/components/sidebar";
+import { ToastProvider } from "@base-ui/react";
 import {
   Image as ImageIcon,
   Hash,
@@ -9,22 +10,23 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { useState } from "react";
-import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { toast, ToastContainer } from "react-toastify";
 
 const Idea = () => {
   type Input = {
     title: string;
     description: string;
     image: FileList;
-    catagories: string;
-    roles: string;
+    categories: string[];
+    roles: string[];
   };
 
   const acceptedTypes=["image/png","image/jpeg","image/jpg"]
   const [roleInput, setRoleInput] = useState("");
   const [roles, setRoles] = useState<string[]>([]);
-  const [catagoryInput, setCatagoryInput] = useState("");
-  const [catagories, setCatagories] = useState<string[]>([]);
+  const [categoryInput, setCategoryInput] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
   const [PreviewImageUrl, setPreviewImageUrl] = useState<string>("");
   const {
     register,
@@ -35,15 +37,38 @@ const Idea = () => {
 
   const{ref,onChange,...rest}=register("image",{
   validate:{
+    isFile:(files)=>files.length>0 && files.length<2 || "file is required or too many files",
     isJpegPng:(files)=>acceptedTypes.includes(files[0]?.type) || "file type not accepted",
     maxSize:  (files)=>files[0]?.size<3_097_152 || "max size 3MB"
   }  
   })
 
   const onSubmit: SubmitHandler<Input> = (data) => {
-    alert("yo");
-    const allData = { ...data, catagories, roles };
-  };
+    const allData = { ...data, categories, roles };
+    postIdea(allData)  
+};
+
+  async function postIdea(data:Input){
+    const formData=new FormData();
+    formData.append("title",data.title);
+    formData.append("description",data.description); 
+    formData.append("image",data.image[0]);
+    formData.append("categories",JSON.stringify(data.categories));
+    formData.append("roles",JSON.stringify(data.roles));
+
+    const req=await fetch("/api/create/idea",{
+      method:"POST",
+      body:formData
+    })
+    const response = await req.json();
+    if(req.status==200){
+      toast.success(response.message);
+      console.log(response);
+    }else{
+      console.log(response)
+      toast.error(response.message);
+    }
+  }
 
   function handleAddRole(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
@@ -56,18 +81,19 @@ const Idea = () => {
     }
   }
 
-  function handleAddCatagory(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleAddCategory(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (catagoryInput.trim() && !catagories.includes(catagoryInput.trim())) {
-        setCatagories([...catagories, catagoryInput.trim()]);
-        setCatagoryInput("");
+      if (categoryInput.trim() && !categories.includes(categoryInput.trim())) {
+        setCategories([...categories, categoryInput.trim()]);
+        setCategoryInput("");
       }
     }
   }
 
   return (
     <div className="w-screen h-screen flex">
+      <ToastContainer/>
       <Sidebar />
       <div className="w-full min-h-screen overflow-y-auto bg-[#020617] text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-200 font-sans antialiased">
         {/* AMBIENT BACKGROUND ELEMENTS */}
@@ -111,7 +137,7 @@ const Idea = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="grid grid-cols-1 md:grid-cols-12 gap-10"
           >
-            <input type="hidden" {...register("catagories", { validate: () => catagories.length > 0 || "At least one category is required" })} />
+            <input type="hidden" {...register("categories", { validate: () => categories.length > 0 || "At least one category is required" })} />
             <input type="hidden" {...register("roles", { validate: () => roles.length > 0 || "At least one role is required" })} />
             {/* LEFT COLUMN: THE CONCEPTUAL CORE */}
             <div className="md:col-span-8 space-y-10">
@@ -212,17 +238,17 @@ const Idea = () => {
                   </span>
                 </div>
                 <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 flex flex-wrap gap-2">
-                  {catagories.map((catagory, i) => (
+                  {categories.map((category, i) => (
                     <span
                       key={i}
                       className="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-lg text-sm flex items-center gap-2"
                     >
-                      {catagory}
+                      {category}
                       <button
                         type="button"
                         onClick={() =>
-                          setCatagories(
-                            catagories.filter((_, idx) => idx !== i),
+                          setCategories(
+                            categories.filter((_, idx) => idx !== i),
                           )
                         }
                         className="text-red-400"
@@ -234,10 +260,10 @@ const Idea = () => {
 
                   <input
                     type="text"
-                    value={catagoryInput}
-                    onChange={(e) => setCatagoryInput(e.target.value)}
-                    onKeyDown={handleAddCatagory}
-                    placeholder="Add catagory and press Enter"
+                    value={categoryInput}
+                    onChange={(e) => setCategoryInput(e.target.value)}
+                    onKeyDown={handleAddCategory}
+                    placeholder="Add category and press Enter"
                     className="flex-1 bg-transparent outline-none text-sm p-2"
                   />
                 </div>
@@ -252,9 +278,9 @@ const Idea = () => {
                     </span>
                   ))}
                 </div>
-                {errors.catagories && (
+                {errors.categories && (
                   <p className="text-sm text-red-400 mt-2">
-                    {errors.catagories.message?.toString()}
+                    {errors.categories.message?.toString()}
                   </p>
                 )}
               </div>

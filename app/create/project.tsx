@@ -19,7 +19,7 @@ type Input = {
   reasonForLeavingProject: string;
   image: FileList;
   catagories: string[];
-  projectType:string;
+  projectType: string;
   roles: string[];
 };
 
@@ -39,43 +39,28 @@ export default function CreateProjectPage() {
     },
   });
 
-  
-  const acceptedTypes=["image/png","image/jpg","image/jpeg"]
+  const acceptedTypes = ["image/png", "image/jpg", "image/jpeg"];
   const [PreviewImageUrl, setPreviewImageUrl] = useState<string>("");
   const [roleInput, setRoleInput] = useState("");
   const [roles, setRoles] = useState<string[]>([]);
   const [catagoryInput, setCatagoryInput] = useState("");
   const [catagories, setCatagories] = useState<string[]>([]);
-
   const uiuxProgress = watch("uiuxProgress");
   const backendProgress = watch("backendProgress");
 
-  const {ref,onChange,...rest}=register("image",{
-    required:"Image is required",
-    validate:{
-      isJpgPng:(files)=>acceptedTypes.includes(files[0]?.type)|| "Only JPG/PNG images are allowed",
-      maxSize:(files)=>files[0]?.size<=3*1024*1024 || "Max file size is 3MB",
-    }
-  })
-
-  // function ValidateImageType(fileList: FileList) {
-  //   if (fileList.length > 0) {
-  //     return "only one image upload allowed";
-  //   } else if (fileList.length == 0) {
-  //     null;
-  //   } else {
-  //     return "image is required";
-  //   }
-  //   // alert(fileList[0].type);
-
-  //   const acceptedTypes = ["image/jpeg", "image/png"];
-  //   const fileType = fileList[0]?.type;
-  //   if (acceptedTypes.includes(fileType)) {
-  //     return true;
-  //   } else {
-  //     return "only png/jpeg image allowed";
-  //   }
-  // }
+  const { ref, onChange, ...rest } = register("image", {
+    required: "Image is required",
+    validate: {
+      isFile: (files) =>
+        (files.length > 0 && files.length < 2) ||
+        "file is required or too many files",
+      isJpgPng: (files) =>
+        acceptedTypes.includes(files[0]?.type) ||
+        "Only JPG/PNG images are allowed",
+      maxSize: (files) =>
+        files[0]?.size <= 3 * 1024 * 1024 || "Max file size is 3MB",
+    },
+  });
 
   function handleAddRole(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
@@ -100,7 +85,7 @@ export default function CreateProjectPage() {
   }
 
   const onSubmit: SubmitHandler<Input> = (data) => {
-    const formData={...data,roles,catagories};
+    const formData = { ...data, roles, catagories };
     setPreviewImageUrl("");
     setRoles([]);
     setCatagories([]);
@@ -196,7 +181,7 @@ export default function CreateProjectPage() {
                     onChange={(e) => {
                       onChange(e);
                       const file = e.target.files ? e.target.files[0] : null;
-                      console.log("selected file type",file?.type)
+                      console.log("selected file type", file?.type);
                       if (file) {
                         setPreviewImageUrl(URL.createObjectURL(file));
                       }
@@ -302,7 +287,12 @@ export default function CreateProjectPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <select {...register("projectType", { required: "Project type is required" })} className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 font-medium appearance-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                    <select
+                      {...register("projectType", {
+                        required: "Project type is required",
+                      })}
+                      className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 font-medium appearance-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                    >
                       <option>SaaS Model</option>
                       <option>Open Source</option>
                       <option>Startup Prototype</option>
@@ -322,7 +312,11 @@ export default function CreateProjectPage() {
                           {cat}
                           <button
                             type="button"
-                            onClick={() => setCatagories(catagories.filter((_, idx) => idx !== i))}
+                            onClick={() =>
+                              setCatagories(
+                                catagories.filter((_, idx) => idx !== i),
+                              )
+                            }
                             className="text-red-400"
                           >
                             ✕
@@ -347,7 +341,9 @@ export default function CreateProjectPage() {
                           {role}
                           <button
                             type="button"
-                            onClick={() => setRoles(roles.filter((_, idx) => idx !== i))}
+                            onClick={() =>
+                              setRoles(roles.filter((_, idx) => idx !== i))
+                            }
                             className="text-red-400"
                           >
                             ✕
@@ -388,7 +384,9 @@ export default function CreateProjectPage() {
                     </h2>
                   </div>
                   <textarea
-                    {...register("reasonForLeavingProject", { required: "Reason is required" })}
+                    {...register("reasonForLeavingProject", {
+                      required: "Reason is required",
+                    })}
                     rows={3}
                     placeholder="e.g. Burnout, hit a technical wall, or moved to a new city..."
                     className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-neutral-700 italic"
