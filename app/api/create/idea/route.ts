@@ -2,12 +2,12 @@ import fs from "fs";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/app/db/connectDB";
-import User from "@/app/db/schemaUser";
-import Idea from "@/app/db/schemaIdeas";
+import User from "@/lib/schemaUser";
+import Idea from "@/lib/schemaIdeas";
 
 async function saveImage(imageFile: File): Promise<string> {
   if (!imageFile) return "";
-  
+
   return `/uploads/${fileName}`;
 }
 
