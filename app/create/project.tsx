@@ -1,4 +1,5 @@
 import Sidebar from "@/components/sidebar";
+import { error } from "console";
 import {
   HelpCircle,
   Layers,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast, ToastContainer } from "react-toastify";
 
 type Input = {
   title: string;
@@ -29,6 +31,8 @@ export default function CreateProjectPage() {
     handleSubmit,
     watch,
     reset,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<Input>({
     defaultValues: {
@@ -84,20 +88,67 @@ export default function CreateProjectPage() {
     }
   }
 
-  const onSubmit: SubmitHandler<Input> = (data) => {
+  async function postProject(formData:Input){
+    console.log("thjis is the form",formData)
+    const form=new FormData();
+    form.append("title",formData.title);
+    form.append("description",formData.description);
+    form.append("image",formData.image[0]);
+    form.append("categories",JSON.stringify(formData.catagories));
+    form.append("roles",JSON.stringify(formData.roles));
+    form.append("uiuxProgress",formData.uiuxProgress.toString());
+    form.append("backendProgress",formData.backendProgress.toString());
+    form.append("projectType",formData.projectType);
+    form.append("reasonForLeavingProject",formData.reasonForLeavingProject);
+    console.log("this is the form at frontend before sending to backend",form);
+    const req=await fetch("/api/create/project",{
+      method:"POST",
+      body:form
+    })
+    const response = await req.json();
+    if(req.status==200){
+      toast.success(response.message);
+      console.log(response);
+      return true;
+    }else{
+      console.log(response)
+      toast.error(response.message);
+      return false;
+    }
+  }
+
+  const onSubmit: SubmitHandler<Input> = async (data) => {
+    if (catagories.length < 1) {
+      toast.error("Please add at least one category.");
+      return;
+    }
+    if (roles.length < 1) {
+      toast.error("Please add at least one role.");
+      return;
+    }if(uiuxProgress==0 || backendProgress==0){
+      toast.error("Please fill the ui/ux & backend progress bar");
+      return;
+    }
+
     const formData = { ...data, roles, catagories };
-    setPreviewImageUrl("");
-    setRoles([]);
-    setCatagories([]);
-    setRoleInput("");
-    setCatagoryInput("");
-    reset();
+    console.log("Form data at Project", formData);
+
+    await postProject(formData)
+      .then(() => {
+        reset();
+        setPreviewImageUrl("");
+        setRoles([]);
+        setCatagories([]);
+        setRoleInput("");
+        setCatagoryInput("");
+      })
+      .catch(() => toast.error("Failed to create project"));
   };
 
   return (
     <div className="h-screen w-screen flex">
       <Sidebar />
-
+<ToastContainer/>
       <div className="w-full min-h-screen overflow-y-auto bg-[#050505] text-slate-200 selection:bg-indigo-500/30 selection:text-indigo-200 font-sans">
         {/* BACKGROUND DECORATION */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -254,12 +305,20 @@ export default function CreateProjectPage() {
                       <span className="text-white">{uiuxProgress}%</span>
                     </div>
                     <input
-                      {...register("uiuxProgress", { valueAsNumber: true })}
+                      {...register("uiuxProgress", {
+                        required: "UI/UX progress is required",
+                        valueAsNumber: true
+                      })}
                       type="range"
                       min={0}
                       max={100}
                       className="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
                     />
+                    {errors.uiuxProgress && (
+                      <p className="text-sm text-red-400 mt-1">
+                        {errors.uiuxProgress.message?.toString()}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-3">
@@ -268,12 +327,20 @@ export default function CreateProjectPage() {
                       <span className="text-white">{backendProgress}%</span>
                     </div>
                     <input
-                      {...register("backendProgress", { valueAsNumber: true })}
+                      {...register("backendProgress", {
+                        required: "Backend progress is required",
+                        valueAsNumber: true
+                      })}
                       type="range"
                       min={0}
                       max={100}
                       className="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                     />
+                    {errors.backendProgress && (
+                      <p className="text-sm text-red-400 mt-1">
+                        {errors.backendProgress.message?.toString()}
+                      </p>
+                    )}
                   </div>
                 </div>
               </section>

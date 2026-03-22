@@ -5,19 +5,33 @@ const IdeaSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: String,
-
-  image: String,
-  category: String,
-
-  requiredSkills: [String],
-
+  description: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  categories: {
+    type: [String],
+    required: true,
+    default: [],
+  },
+  roles: {
+    type: [String],
+    required: true,
+    default: [],
+  },
+  requiredSkills: {
+    type: [String],
+    default: [],
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-
   collaborators: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -26,4 +40,5 @@ const IdeaSchema = new mongoose.Schema({
   ],
 }, { timestamps: true });
 
-module.exports = mongoose.model("Idea", IdeaSchema);
+const Idea = mongoose.models.Idea || mongoose.model("Idea", IdeaSchema);
+export default Idea;

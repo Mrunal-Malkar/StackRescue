@@ -5,33 +5,59 @@ const ProjectStackSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: String,
-
+  description: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  categories: {
+    type: [String],
+    required: true,
+    default: [],
+  },
+  roles: {
+    type: [String],
+    required: true,
+    default: [],
+  },
   buildProgress: {
-    frontend: {
+    uiux: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 100,
     },
     backend: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 100,
     },
   },
-
-  type: String,
-
-  requiredSkills: [String],
-  toolsUsed: [String],
-
-  reasonForLeaving: String,
-  image: String,
-
+  projectType: {
+    type: String,
+    required: true,
+  },
+  reasonForLeavingProject: {
+    type: String,
+    required: true,
+  },
+  requiredSkills: {
+    type: [String],
+    default: [],
+  },
+  toolsUsed: {
+    type: [String],
+    default: [],
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-
   collaborators: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,4 +66,5 @@ const ProjectStackSchema = new mongoose.Schema({
   ],
 }, { timestamps: true });
 
-module.exports = mongoose.model("Project", ProjectStackSchema);
+const Project = mongoose.models.Project || mongoose.model("Project", ProjectStackSchema);
+export default Project;
