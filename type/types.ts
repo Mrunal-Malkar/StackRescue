@@ -1,6 +1,11 @@
 type stackAttributeType = { label: ""; value: string };
 
 
+export type CloudinaryUploadResponse = {
+  secure_url: string;
+  public_id: string;
+};
+
 
 export type StackCardType = {
   title: string;

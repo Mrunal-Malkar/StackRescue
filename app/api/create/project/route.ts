@@ -1,15 +1,8 @@
-import fs from "fs";
-import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/app/db/connectDB";
+import connectDB from "@/lib/connectDB";
 import User from "@/lib/schemaUser";
 import Project from "@/lib/schemaProjects";
-
-async function saveImage(imageFile: File): Promise<string> {
-  if (!imageFile) return "";
-
-  return `/uploads/${fileName}`;
-}
+import saveImage from "@/app/functions/CloudinaryUploadImage";
 
 export async function POST(req: NextRequest) {
   try {
@@ -84,7 +77,7 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
-    const imageUrl = await saveImage(imageFile);
+    const imageUrl = await saveImage(imageFile,"project");
 
     const userEmail =
       formData.get("userEmail")?.toString() || "guest@devgarage.local";

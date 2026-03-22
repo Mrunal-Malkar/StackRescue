@@ -1,15 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/app/db/connectDB";
+import connectDB from "@/app/../lib/connectDB";
 import User from "@/lib/schemaUser";
 import Idea from "@/lib/schemaIdeas";
-
-async function saveImage(imageFile: File): Promise<string> {
-  if (!imageFile) return "";
-
-  return `/uploads/${fileName}`;
-}
+import saveImage from "@/app/functions/CloudinaryUploadImage";
 
 export async function POST(req: NextRequest) {
   try {
@@ -66,7 +61,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const imageUrl = await saveImage(imageFile);
+    const imageUrl = await saveImage(imageFile,"idea");
 
     const userEmail =
       formData.get("userEmail")?.toString() || "guest@devgarage.local";
