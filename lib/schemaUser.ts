@@ -20,7 +20,18 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-
+    about:{
+      type:String,
+      default:""
+    },
+    toolsMostUsed:{
+      type:Array,
+    },
+    
+    tool:{
+      name:String,
+      link:String,
+    },
     stacks: {
       created: [
         {
@@ -32,7 +43,7 @@ const UserSchema = new mongoose.Schema(
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Project",
-        },
+        },{timeStamp:true}
       ],
     },
 

@@ -57,6 +57,12 @@ export const authProvider: NextAuthOptions = {
             created: [],
             collaborated: [],
           },
+          about:"",
+          tool:{
+            name:"",
+            url:"",
+          },
+          toolsMostUsed:[],
         });
         console.log("the new user",newUser);
 

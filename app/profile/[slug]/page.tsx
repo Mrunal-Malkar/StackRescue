@@ -4,9 +4,22 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Sidebar from "../../../components/sidebar";
 import { InViewType } from "../../../type/types";
+import { useSession } from "next-auth/react";
+import SignInPage from "@/components/sign-in";
+import Loader from "@/components/ui/Loader";
 
 const Page = () => {
+  const session=useSession();
   const [InView, setInView] = useState<InViewType>("Posted");
+  
+  if(session.status=="unauthenticated"){
+    return <SignInPage/>;
+  }else if (session.status=="loading"){
+    return <div className="w-max h-screen flex justify-center items-center">
+      <Loader/>
+    </div>
+  }
+
   return (
     <div className="w-full h-screen min-h-screen bg-neutral-950 text-white flex">
       <Sidebar />

@@ -1,7 +1,6 @@
 import { ButtonCustom } from "@/components/ui/button";
 import { Navbar } from "@/components/ui/Navbar";
 import { Globe, Handshake, LucideCircleArrowUp, User2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 export default function Home() {
