@@ -1,8 +1,11 @@
 "use client";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
 
 export const Navbar = () => {
+  const session=useSession();
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Explore", path: "/explore" },
@@ -57,9 +60,10 @@ export const Navbar = () => {
         {/* Desktop Right */}
         <div className="hidden md:flex items-center gap-4">
           <button
+          onClick={()=>session.status=="authenticated"?signOut():signIn()}
             className={`px-8 py-2.5 rounded-full ml-4 cursor-pointer transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
           >
-            Login
+            {session.status=="authenticated"?"signOut":"signIn"}
           </button>
         </div>
 
@@ -105,8 +109,8 @@ export const Navbar = () => {
             </a>
           ))}
 
-          <button className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
-            Login
+          <button onClick={()=>session.status=="authenticated"?signOut():signIn()} className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
+            {session.status=="authenticated"?"signOut":"signIn"}
           </button>
         </div>
       </nav>
