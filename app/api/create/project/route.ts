@@ -103,11 +103,6 @@ export async function POST(req: NextRequest) {
       createdBy: user._id,
     });
 
-    user.stacks = user.stacks || { created: [], collaborated: [] };
-    user.stacks.created = user.stacks.created || [];
-    user.stacks.created.push(project._id);
-    await user.save();
-
     return NextResponse.json(
       { message: "Project created successfully", project },
       { status: 200 },

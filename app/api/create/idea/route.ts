@@ -80,12 +80,7 @@ export async function POST(req: NextRequest) {
       roles,
       createdBy: user._id,
     });
-
-    user.ideas = user.ideas || { created: [], collaborated: [] };
-    user.ideas.created = user.ideas.created || [];
-    user.ideas.created.push(idea._id);
-    await user.save();
-
+    
     return NextResponse.json(
       { message: "Idea created successfully", idea },
       { status: 200 },

@@ -1,3 +1,4 @@
+"use client"
 import Sidebar from "@/components/sidebar";
 import { ToastProvider } from "@base-ui/react";
 import {

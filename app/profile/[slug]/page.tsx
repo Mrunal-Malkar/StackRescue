@@ -20,6 +20,15 @@ const Page = () => {
     </div>
   }
 
+  async function getData(){
+    try{
+      const data=await fetch("/api/get/profiledata");
+      console.log("got profile data from the backed!",data);
+    }catch(e){
+      console.log("error while getting profile data",e);
+    }
+  }
+
   return (
     <div className="w-full h-screen min-h-screen bg-neutral-950 text-white flex">
       <Sidebar />

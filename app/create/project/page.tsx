@@ -1,3 +1,4 @@
+"use client"
 import Sidebar from "@/components/sidebar";
 import { error } from "console";
 import {
@@ -31,8 +32,6 @@ export default function CreateProjectPage() {
     handleSubmit,
     watch,
     reset,
-    setError,
-    clearErrors,
     formState: { errors },
   } = useForm<Input>({
     defaultValues: {

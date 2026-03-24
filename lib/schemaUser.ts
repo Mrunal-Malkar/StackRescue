@@ -27,40 +27,10 @@ const UserSchema = new mongoose.Schema(
     toolsMostUsed:{
       type:Array,
     },
-    
-    tool:{
-      name:String,
-      link:String,
-    },
-    stacks: {
-      created: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Project",
-        },
-      ],
-      collaborated: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Project",
-        },{timeStamp:true}
-      ],
-    },
-
-    ideas: {
-      created: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Idea",
-        },
-      ],
-      collaborated: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Idea",
-        },
-      ],
-    },
+    numbers:{
+      Collaborated:Number,
+      Posted:Number,
+    }
   },
   { timestamps: true },
 );

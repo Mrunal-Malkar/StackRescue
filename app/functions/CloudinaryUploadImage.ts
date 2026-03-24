@@ -19,12 +19,11 @@ export default async function saveImage(
       throw new Error("File too large (max 3MB)");
     }
 
-    const arrayBuffer = await imageFile.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const buffer = await convertFileToBinary(imageFile);
 
     const uploadResult = await new Promise<UploadApiResponse>(
       (resolve, reject) => {
-        const stream = Cloudinary.v2.uploader.upload_stream(
+        const stream = Cloudinary.uploader.upload_stream(
           { folder: `Home/StackRescue/${stackFolder}` },
           (err, res) => {
             if (err) return reject(err);
@@ -35,6 +34,7 @@ export default async function saveImage(
         stream.end(buffer);
       },
     );
+    console.log("done with uploading image");
 
     if (!uploadResult || !uploadResult.secure_url) {
       throw new Error("Upload failed - no secure URL returned");
@@ -55,4 +55,13 @@ export default async function saveImage(
       throw error;
     }
   }
+}
+
+
+async function convertFileToBinary(file: File): Promise<Buffer> {
+  const arrayBuffer = await file.arrayBuffer();
+  console.log("this is the arraybuffer",arrayBuffer);
+  const buffer=Buffer.from(arrayBuffer);
+  console.log("buffer",buffer);
+  return buffer
 }
