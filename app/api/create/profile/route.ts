@@ -58,12 +58,15 @@ export async function POST(req: NextRequest) {
     };
 
     const user = await User.findOneAndUpdate({ _id: userId }, updateData, {
-      new: true,
+      returnDocument:"after"
     });
 
     if (!user) {
+        console.log("was not able to find user while updating profile");
       return NextResponse.json({ status: 404, message: "User not found!" });
     }
+
+    console.log("got the user and updated it!",user);
 
     return NextResponse.json({
       status: 200,

@@ -11,11 +11,7 @@ export default function SignInPage() {
       <div
         className="absolute top-15 left-18 cursor-pointer"
         onClick={() => {
-          if (window.history.length > 1) {
-            router.back();
-          } else {
-            router.push("/");
-          }
+          router.push("/explore")
         }}
       >
         <Undo2 className="text-white size-8 cursor-pointer" />

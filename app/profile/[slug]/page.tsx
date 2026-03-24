@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Sidebar from "../../../components/sidebar";
-import { InViewType } from "../../../type/types";
+import { InViewType, ProfileData } from "../../../type/types";
 import { useSession } from "next-auth/react";
 import SignInPage from "@/components/sign-in";
 import Loader from "@/components/ui/Loader";
@@ -15,38 +15,9 @@ import {
 } from "lucide-react";
 import ProfileModal from "@/components/profileModal";
 import { useRouter } from "next/navigation";
+import { projectShutdown } from "next/dist/build/swc/generated-native";
+import { toast, ToastContainer } from "react-toastify";
 
-type ProfileData = {
-  name: string;
-  role: string;
-  bio: string;
-  skills: string[];
-  stats: {
-    collaborations: number;
-    posted: number;
-    completed: number;
-  };
-};
-
-async function fetchData(): Promise<ProfileData | 404> {
-  const res = await fetch("/api/get/profiledata", {
-    credentials: "include",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch profile data");
-  }
-
-  const data = await res.json();
-
-  if (data.status === 404) {
-    return 404;
-  } else if (data.status === 200) {
-    return data.data as ProfileData;
-  }
-
-  throw new Error("Unexpected response from server");
-}
 
 const Page = () => {
   const { data: session, status } = useSession();
@@ -60,7 +31,7 @@ const Page = () => {
     enabled: status === "authenticated",
   });
 
-  if (status === "loading") {
+  if (status == "loading") {
     return (
       <div className="w-screen h-screen flex justify-center items-center">
         <Loader />
@@ -68,7 +39,7 @@ const Page = () => {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (status == "unauthenticated") {
     return <SignInPage />;
   }
 
@@ -86,11 +57,7 @@ const Page = () => {
         <div
           className="absolute top-15 left-18 cursor-pointer"
           onClick={() => {
-            if (window.history.length > 1) {
-              router.back();
-            } else {
-              router.push("/");
-            }
+            router.push("/explore");
           }}
         >
           <Undo2 className="text-white size-8 cursor-pointer" />
@@ -111,11 +78,7 @@ const Page = () => {
         <div
           className="absolute top-15 left-18 cursor-pointer"
           onClick={() => {
-            if (window.history.length > 1) {
-              router.back();
-            } else {
-              router.push("/");
-            }
+            router.push("/explore")
           }}
         >
           <Undo2 className="text-white size-8 cursor-pointer" />
@@ -148,8 +111,17 @@ const Page = () => {
     );
   }
 
+  if(data){
+    // const ideaCreated=data.ideas.created;
+    // const projectCreated=data.projects.created;
+    // const ideaCollaborated=data.ideas.collaborated;
+    // const projectCollaborated=data.projects.collaborated;
+    // const all=[ideaCreated];
+  }
+
   return (
     <div className="w-full relative h-screen min-h-screen bg-neutral-950 text-white flex">
+      <ToastContainer/>
       <Sidebar />
       <div className="w-full h-screen min-h-screen bg-neutral-950 text-white flex flex-col sm:flex-row overflow-y-auto">
         {/* LEFT SIDE */}
@@ -163,32 +135,32 @@ const Page = () => {
               />
               <div>
                 <h1 className="text-xl font-semibold tracking-tight">
-                  {data.name}
+                  {session?.user.username}
                 </h1>
-                <p className="text-sm text-neutral-400">{data.role}</p>
+                <p className="text-sm text-neutral-400">{}</p>
               </div>
               <div className="flex flex-wrap justify-center gap-2 text-xs">
-                {data.skills.map((skill) => (
+                {data.tools.map((tool) => (
                   <span
-                    key={skill}
+                    key={tool}
                     className="px-2 py-1 bg-neutral-800 border border-neutral-700 rounded-md"
                   >
-                    {skill}
+                    {tool}
                   </span>
                 ))}
               </div>
             </div>
 
             <p className="text-sm text-neutral-300 text-center leading-relaxed">
-              {data.bio}
+              {/* {data.bio} */}
             </p>
 
             <div className="flex gap-2">
-              <button className="flex-1 bg-blue-600 hover:bg-blue-500 text-sm py-2 rounded-lg transition">
+              <button onClick={()=>toast.info("this feature will be available soon.")} className="flex-1 bg-blue-600 hover:bg-blue-500 text-sm py-2 rounded-lg transition">
                 Message
               </button>
               <button className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-sm py-2 rounded-lg border border-neutral-700 transition">
-                View GitHub
+                {data.socialLink}
               </button>
             </div>
           </div>
@@ -204,7 +176,7 @@ const Page = () => {
               </span>
             </h1>
             <p className="max-w-3xl sm:text-lg text-sm text-gray-300">
-              {data.bio}
+              {data.about}
             </p>
           </div>
 
@@ -213,22 +185,18 @@ const Page = () => {
             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 min-w-[150px]">
               <h2 className="text-xs text-neutral-400">Total Collaborations</h2>
               <p className="text-2xl font-semibold">
-                {data.stats.collaborations}
+                {data.totalCollaborations}
               </p>
             </div>
             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 min-w-[150px]">
-              <h2 className="text-xs text-neutral-400">Projects Posted</h2>
-              <p className="text-2xl font-semibold">{data.stats.posted}</p>
-            </div>
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 min-w-[150px]">
-              <h2 className="text-xs text-neutral-400">Projects Completed</h2>
-              <p className="text-2xl font-semibold">{data.stats.completed}</p>
+              <h2 className="text-xs text-neutral-400">Stacks Posted</h2>
+              <p className="text-2xl font-semibold">{data.createdTotal}</p>
             </div>
           </div>
 
           {/* NAVIGATION */}
           <div className="flex gap-3 overflow-x-auto border-b border-neutral-800 pb-2 text-sm">
-            {(["Posted", "Collaborated", "Completed"] as InViewType[]).map(
+            {(["Posted", "Collaborated"] as InViewType[]).map(
               (view) => (
                 <button
                   key={view}
@@ -238,8 +206,7 @@ const Page = () => {
                   {view === "Posted"
                     ? "Projects Posted"
                     : view === "Collaborated"
-                      ? "Projects Collaborated"
-                      : "Completed"}
+                      ? "Projects Collaborated":"completed"}
                 </button>
               ),
             )}
@@ -247,7 +214,7 @@ const Page = () => {
 
           {/* PROJECT LIST AREA */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2">
+            {<div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2">
               <h3 className="font-semibold text-blue-400">AI Resume Builder</h3>
               <p className="text-sm text-neutral-400 line-clamp-2">
                 A tool that generates developer resumes using AI templates.
@@ -258,7 +225,7 @@ const Page = () => {
                 </span>
                 <span className="px-2 py-1 bg-neutral-800 rounded">Prisma</span>
               </div>
-            </div>
+            </div>}
           </div>
         </div>
       </div>
@@ -269,5 +236,29 @@ const Page = () => {
     </div>
   );
 };
+
+
+async function fetchData(): Promise<ProfileData | 404> {
+  const res = await fetch("/api/get/profiledata", {
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch profile data");
+  }
+console.log("the raw data",res)
+  const data = await res.json();
+  console.log("this is the data i got",data)
+
+  if (data.status == 404) {
+    console.log("i got the 404 status here, le'me chack");
+    console.log(data);
+    return 404;
+  } else if (data.status == 200) {
+    return data.data as ProfileData;
+  }
+
+  throw new Error("Unexpected response from server");
+}
 
 export default Page;

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import {
@@ -11,13 +11,7 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-
-interface ProfileFormInputs {
-  about: string;
-  link: string;
-  image: FileList;
-  tools: string[]; // exactly 3 tools
-}
+import { ProfileFormInputs } from "@/type/types";
 
 export default function ProfileModal({
   isOpen,
@@ -47,23 +41,25 @@ export default function ProfileModal({
     formData.append("socialLink", Data.link);
     formData.append("tools", tools.toString());
 
-    const res = await fetch("/api/create/profile", {
+    const request = await fetch("/api/create/profile", {
       method: "POST",
       body: formData,
     });
+    const res = await request.json();
 
-    if (!res) {
-      return toast.error("error creating a profile, try again later");
+    if (!res || res.status != 200) {
+      return toast.error(
+        res.message ? res.message : "error creating a profile, try again later",
+      );
     } else if (res.status == 200) {
+        router.push(
+            session.data?.user.email
+              ? `/profile/${session.data?.user.email}`
+              : "/explore",
+          );
       toast.success("profile created!, redirecting...");
-      if(session.data?.user.email){
-          return router.push(`/profile/${session.data?.user.email}`);
-      }else{
-        return router.push("/explore");
-      }
-    }
   }
-
+  }
   const onSubmit = async (data: ProfileFormInputs) => {
     // Trim tools
     await AddProfileInfo(data);
@@ -89,7 +85,8 @@ export default function ProfileModal({
           {/* Tools (3 inputs) */}
           <div>
             <label className="text-sm text-zinc-400 flex items-center gap-2">
-              <Wrench size={14} /> Top 3 tools/software/language anything.You use.
+              <Wrench size={14} /> Top 3 tools/software/language anything.You
+              use.
             </label>
             <div className="grid grid-cols-3 gap-2 mt-2">
               {[0, 1, 2].map((i) => (

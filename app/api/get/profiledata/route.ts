@@ -7,14 +7,16 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET() {
   try {
     const session = await getServerSession(authProvider);
-
+    console.log("got the session",session);
     if (!session) {
       return NextResponse.json({ status: 401, message: "Unauthorized" });
     }
 
     const userId = session.user.id;
+    console.log("got the user id",userId);
 
     await connectDB();
+console.log("connected to mongodb from profile");
 
     const userData = await User.findById(userId)
       .select(["toolsMostUsed", "about", "socialLink", "projects", "ideas"])
@@ -25,8 +27,11 @@ export async function GET() {
         "ideas.collaborated",
       ]);
 
-    if (!userData) {
-      return NextResponse.json({
+console.log("dont know but the userData is",userData);
+
+if (!userData || (!userData.toolsMostUsed?.length && (!userData.about || userData.about.trim() === "") && (!userData.socialLink || userData.socialLink.trim() === ""))) {
+console.log("returning the no profile data now");
+    return NextResponse.json({
         status: 404,
         message: "No profile data found!",
       });
@@ -49,6 +54,8 @@ export async function GET() {
       projects: userData.projects,
       ideas: userData.ideas,
     };
+
+    console.log("return the userData checked now",profileData);
 
     return NextResponse.json({status:200,data:profileData});
   } catch (e) {

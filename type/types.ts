@@ -20,6 +20,31 @@ export type ProfileDataType={
   image:string
 }
 
+
+export interface ProfileFormInputs {
+  about: string;
+  link: string;
+  image: FileList;
+  tools: string[]; // exactly 3 tools
+}
+
+
+export type ProfileData = {
+  about: string;
+  socialLink: string;
+  tools: string[];
+  totalCollaborations: number;
+  createdTotal: number;
+  projects: {
+    created: [];
+    collaborated:[];
+  };
+  ideas: {
+    created: [];
+    collaborated: [];
+  };
+};
+
 export type ProjectStackType={
   title:string;
   description:string;
