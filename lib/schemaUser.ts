@@ -24,12 +24,33 @@ const UserSchema = new mongoose.Schema(
       type:String,
       default:""
     },
+    socialLink:{
+      type:String,
+      default:""
+    },
     toolsMostUsed:{
       type:Array,
+      default: [],
     },
-    numbers:{
-      Collaborated:Number,
-      Posted:Number,
+    projects: {
+      created: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: [],
+      },
+      collaborated: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: [],
+      },
+    },
+    ideas: {
+      created: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: [],
+      },
+      collaborated: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: [],
+      },
     }
   },
   { timestamps: true },

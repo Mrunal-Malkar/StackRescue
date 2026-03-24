@@ -103,6 +103,10 @@ export async function POST(req: NextRequest) {
       createdBy: user._id,
     });
 
+    await User.findByIdAndUpdate(user._id, {
+      $push: { "projects.created": project._id }
+    });
+
     return NextResponse.json(
       { message: "Project created successfully", project },
       { status: 200 },

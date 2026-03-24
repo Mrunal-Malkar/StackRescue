@@ -4,7 +4,7 @@ export default async function connectDB() {
   try {
     console.log("this is the mongoDB passs", process.env.MONGODB_PASSWORD);
     const connect = await mongoose.connect(
-      `mongodb+srv://mrunalpmalkar_db_user:${process.env.MONGODB_PASSWORD}@cluster0.1dlvqul.mongodb.net/`,
+      `mongodb+srv://mrunalpmalkar_db_user:${process.env.MONGODB_PASSWORD}@cluster0.1dlvqul.mongodb.net/StackRescue`,
     );
     connect.connection.on("connected", () => {
       console.log("connected");

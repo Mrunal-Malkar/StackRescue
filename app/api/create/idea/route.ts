@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/app/../lib/connectDB";
 import User from "@/lib/schemaUser";
@@ -80,7 +78,11 @@ export async function POST(req: NextRequest) {
       roles,
       createdBy: user._id,
     });
-    
+
+    await User.findByIdAndUpdate(user._id, {
+      $push: { "ideas.created": idea._id }
+    });
+
     return NextResponse.json(
       { message: "Idea created successfully", idea },
       { status: 200 },

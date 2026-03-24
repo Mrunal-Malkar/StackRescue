@@ -4,22 +4,54 @@ import User from "@/lib/schemaUser";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req:NextRequest){
-   try{ const session=await getServerSession(authProvider);
+export async function GET() {
+  try {
+    const session = await getServerSession(authProvider);
 
-    if(!session){
-        return NextResponse.json({status:401,message:"forbidden,unauthorised requests"})
+    if (!session) {
+      return NextResponse.json({ status: 401, message: "Unauthorized" });
     }
 
-    const userId=session.user.id;
+    const userId = session.user.id;
+
     await connectDB();
-    const userData=await User.findOne({_id:userId}).select(["tools","about","numbers"]);
-    if(!userData){
-        return NextResponse.json({status:404,message:"no profile data found!"})
+
+    const userData = await User.findById(userId)
+      .select(["toolsMostUsed", "about", "socialLink", "projects", "ideas"])
+      .populate([
+        "projects.created",
+        "projects.collaborated",
+        "ideas.created",
+        "ideas.collaborated",
+      ]);
+
+    if (!userData) {
+      return NextResponse.json({
+        status: 404,
+        message: "No profile data found!",
+      });
     }
-    
-    return NextResponse.json(userData)
-}catch(e){
-    return NextResponse.json({status:500,error:e})
-}
+
+    const collaboratedProjects = userData.projects.collaborated.length;
+    const collaboratedIdeas = userData.ideas.collaborated.length;
+
+    const totalCollaborations = collaboratedProjects + collaboratedIdeas;
+
+    const created =
+      userData.projects.created.length + userData.ideas.created.length;
+
+    const profileData = {
+      about: userData.about,
+      socialLink: userData.socialLink,
+      tools: userData.toolsMostUsed,
+      totalCollaborations,
+      createdTotal: created,
+      projects: userData.projects,
+      ideas: userData.ideas,
+    };
+
+    return NextResponse.json({status:200,data:profileData});
+  } catch (e) {
+    return NextResponse.json({ status: 500, error: e });
+  }
 }

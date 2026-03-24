@@ -13,6 +13,13 @@ export type StackCardType = {
   attributes: Array<stackAttributeType>;
 };
 
+export type ProfileDataType={
+  tools:string[],
+  about:string,
+  socialLink:string,
+  image:string
+}
+
 export type ProjectStackType={
   title:string;
   description:string;

@@ -49,7 +49,7 @@ export const authProvider: NextAuthOptions = {
           name: user.name,
           password: "",
           profileImage: "",
-          stacks: {
+          projects: {
             created: [],
             collaborated: [],
           },
@@ -57,12 +57,8 @@ export const authProvider: NextAuthOptions = {
             created: [],
             collaborated: [],
           },
-          about:"",
-          tool:{
-            name:"",
-            url:"",
-          },
-          toolsMostUsed:[],
+          about: "",
+          toolsMostUsed: []
         });
         console.log("the new user",newUser);
 
