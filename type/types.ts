@@ -1,3 +1,7 @@
+import { InferSchemaType } from "mongoose";
+import Project from "@/lib/schemaProjects";
+import Idea from "@/lib/schemaIdeas";
+
 type stackAttributeType = { label: ""; value: string };
 
 
@@ -36,35 +40,32 @@ export type ProfileData = {
   totalCollaborations: number;
   createdTotal: number;
   projects: {
-    created: [];
-    collaborated:[];
+    created: ProjectStackType[];
+    collaborated: ProjectStackType[];
   };
   ideas: {
-    created: [];
-    collaborated: [];
+    created: IdeaStackType[];
+    collaborated: IdeaStackType[];
   };
 };
 
-export type ProjectStackType={
-  title:string;
-  description:string;
-  buildProgress:{
-    frontend:number;
-    backend:number;
-  },
-  type:string;
-  requiredSkills:string[];
-  reasonForLeaving:string;
-  toolsUsed:string[];
-  image:string;
+export type ProjectStackType=InferSchemaType<typeof Project> & {
+  createdAt:Date,
+  updatedAt:Date,
 }
 
-export type IdeaStackType={
-  title:string;
-  description:string;
-  image:string;
-  category:string;
-  requiredSkills:string[];
+export type IdeaStackType=InferSchemaType<typeof Idea> & {
+  createdAt:Date,
+  updatedAt:Date,
 }
 
-export type InViewType="Posted"|"Collaborated"|"Completed"
+export type BaseStack = {
+  title: string;
+  description: string;
+  tools:string[],
+  createdAt: Date;
+};
+
+export type sortedAllStackType=(IdeaStackType | ProjectStackType )
+
+export type InViewType="Posted"|"Collaborated"|"All"

@@ -2,11 +2,15 @@
 
 import React, { useState } from "react";
 import Sidebar from "../../../components/sidebar";
-import { InViewType, ProfileData } from "../../../type/types";
+import {
+  BaseStack,
+  InViewType,
+  ProfileData,
+} from "../../../type/types";
 import { useSession } from "next-auth/react";
 import SignInPage from "@/components/sign-in";
 import Loader from "@/components/ui/Loader";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   LucideChartNoAxesColumnDecreasing,
   Plus,
@@ -15,20 +19,31 @@ import {
 } from "lucide-react";
 import ProfileModal from "@/components/profileModal";
 import { useRouter } from "next/navigation";
-import { projectShutdown } from "next/dist/build/swc/generated-native";
 import { toast, ToastContainer } from "react-toastify";
-
 
 const Page = () => {
   const { data: session, status } = useSession();
   const [profileModal, setProfileModal] = useState(false);
-  const [InView, setInView] = useState<InViewType>("Posted");
+  const [InView, setInView] = useState<InViewType>("All");
   const router = useRouter();
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["profileData"],
     queryFn: fetchData,
     enabled: status === "authenticated",
+  });
+
+  const {
+    data: stacks,
+    error: stacksError,
+    isLoading: isStacksLoading,
+    isFetching: isStacksFetching,
+  } = useQuery<BaseStack[], Error>({
+    queryKey: ["stacks", InView],
+    queryFn: () => fetchStacks(InView),
+    enabled: status === "authenticated",
+    placeholderData:keepPreviousData,
+    staleTime: 1000 * 60 * 2,
   });
 
   if (status == "loading") {
@@ -78,7 +93,7 @@ const Page = () => {
         <div
           className="absolute top-15 left-18 cursor-pointer"
           onClick={() => {
-            router.push("/explore")
+            router.push("/explore");
           }}
         >
           <Undo2 className="text-white size-8 cursor-pointer" />
@@ -111,17 +126,9 @@ const Page = () => {
     );
   }
 
-  if(data){
-    // const ideaCreated=data.ideas.created;
-    // const projectCreated=data.projects.created;
-    // const ideaCollaborated=data.ideas.collaborated;
-    // const projectCollaborated=data.projects.collaborated;
-    // const all=[ideaCreated];
-  }
-
   return (
     <div className="w-full relative h-screen min-h-screen bg-neutral-950 text-white flex">
-      <ToastContainer/>
+      <ToastContainer />
       <Sidebar />
       <div className="w-full h-screen min-h-screen bg-neutral-950 text-white flex flex-col sm:flex-row overflow-y-auto">
         {/* LEFT SIDE */}
@@ -156,7 +163,12 @@ const Page = () => {
             </p>
 
             <div className="flex gap-2">
-              <button onClick={()=>toast.info("this feature will be available soon.")} className="flex-1 bg-blue-600 hover:bg-blue-500 text-sm py-2 rounded-lg transition">
+              <button
+                onClick={() =>
+                  toast.info("this feature will be available soon.")
+                }
+                className="flex-1 bg-blue-600 hover:bg-blue-500 text-sm py-2 rounded-lg transition"
+              >
                 Message
               </button>
               <button className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-sm py-2 rounded-lg border border-neutral-700 transition">
@@ -196,36 +208,56 @@ const Page = () => {
 
           {/* NAVIGATION */}
           <div className="flex gap-3 overflow-x-auto border-b border-neutral-800 pb-2 text-sm">
-            {(["Posted", "Collaborated"] as InViewType[]).map(
-              (view) => (
-                <button
-                  key={view}
-                  onClick={() => setInView(view)}
-                  className={`${InView === view ? "text-blue-500" : "text-neutral-200"} hover:cursor-pointer`}
-                >
-                  {view === "Posted"
-                    ? "Projects Posted"
-                    : view === "Collaborated"
-                      ? "Projects Collaborated":"completed"}
-                </button>
-              ),
-            )}
+            {(["Posted", "Collaborated","All"] as InViewType[]).map((view) => (
+              <button
+                key={view}
+                onClick={() => setInView(view)}
+                className={`${InView === view ? "text-blue-500" : "text-neutral-200"} hover:cursor-pointer`}
+              >
+                {view === "Posted"
+                  ? "Projects Posted"
+                  : view === "Collaborated"
+                    ? "Projects Collaborated"
+                    : "All"}
+              </button>
+            ))}
           </div>
 
           {/* PROJECT LIST AREA */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {<div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2">
-              <h3 className="font-semibold text-blue-400">AI Resume Builder</h3>
-              <p className="text-sm text-neutral-400 line-clamp-2">
-                A tool that generates developer resumes using AI templates.
-              </p>
-              <div className="flex flex-wrap gap-1 text-xs mt-2">
-                <span className="px-2 py-1 bg-neutral-800 rounded">
-                  Next.js
-                </span>
-                <span className="px-2 py-1 bg-neutral-800 rounded">Prisma</span>
-              </div>
-            </div>}
+            {isStacksLoading ? (
+              <p className="text-gray-400">Loading stacks...</p>
+            ) : stacksError ? (
+              <p className="text-red-400">Failed to load stacks.</p>
+            ) : stacks && stacks.length > 0 ? (
+              stacks.map((item) => {
+                return (
+                  <div
+                    key={item.title}
+                    className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2"
+                  >
+                    <h3 className="font-semibold text-blue-400">{item.title}</h3>
+                    <p className="text-sm text-neutral-400 line-clamp-2">
+                      {item.description}
+                    </p>
+                    <div className="flex flex-wrap gap-1 text-xs mt-2">
+                      {item.tools
+                        ? item.tools.map((tool) => (
+                            <span
+                              key={tool}
+                              className="px-2 py-1 bg-neutral-800 rounded"
+                            >
+                              {tool}
+                            </span>
+                          ))
+                        : null}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-gray-400">No stacks to display.</p>
+            )}
           </div>
         </div>
       </div>
@@ -237,7 +269,6 @@ const Page = () => {
   );
 };
 
-
 async function fetchData(): Promise<ProfileData | 404> {
   const res = await fetch("/api/get/profiledata", {
     credentials: "include",
@@ -246,9 +277,9 @@ async function fetchData(): Promise<ProfileData | 404> {
   if (!res.ok) {
     throw new Error("Failed to fetch profile data");
   }
-console.log("the raw data",res)
+  console.log("the raw data", res);
   const data = await res.json();
-  console.log("this is the data i got",data)
+  console.log("this is the data i got", data);
 
   if (data.status == 404) {
     console.log("i got the 404 status here, le'me chack");
@@ -259,6 +290,26 @@ console.log("the raw data",res)
   }
 
   throw new Error("Unexpected response from server");
+}
+
+async function fetchStacks(view: InViewType): Promise<BaseStack[]> {
+  console.log("this is the view before sending",view)
+  const res = await fetch("/api/get/userstacks", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ currentView: view }),
+  });
+
+  const jsonData = await res.json();
+  console.log("this is the stack data",jsonData);
+
+  if (!res.ok ) {
+    throw new Error(jsonData.message || "Failed to fetch stacks");
+  }
+console.log("Threre you go champ",jsonData.data);
+  return jsonData.data as BaseStack[];
 }
 
 export default Page;
