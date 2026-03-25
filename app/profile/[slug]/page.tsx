@@ -20,6 +20,9 @@ import {
 import ProfileModal from "@/components/profileModal";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
+import fetchStacks from "@/app/functions/FetchStacksProfile";
+import fetchData from "@/app/functions/FetchProfileData";
+import { CldImage } from "next-cloudinary";
 
 const Page = () => {
   const { data: session, status } = useSession();
@@ -60,7 +63,7 @@ const Page = () => {
 
   if (isLoading) {
     return (
-      <div className="w-screen h-screen flex justify-center items-center">
+      <div className="w-screen h-screen bg-gray-800 flex justify-center items-center">
         <Loader />
       </div>
     );
@@ -134,15 +137,17 @@ const Page = () => {
         {/* LEFT SIDE */}
         <div className="sm:w-[360px] w-full sm:h-full flex justify-center items-center p-6">
           <div className="w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-5">
-            <div className="flex flex-col items-center text-center gap-3">
-              <img
-                src="/avatar.png"
+            <div className="flex flex-col items-center text-center gap-3 gap-y-6">
+              <CldImage
+                src={`${data.profileImage}`}
                 className="w-24 h-24 rounded-full object-cover border border-neutral-700"
+                width="320"
+                height="320"
                 alt="avatar"
               />
               <div>
                 <h1 className="text-xl font-semibold tracking-tight">
-                  {session?.user.username}
+                  {(session?.user.name).toUpperCase()}
                 </h1>
                 <p className="text-sm text-neutral-400">{}</p>
               </div>
@@ -158,10 +163,6 @@ const Page = () => {
               </div>
             </div>
 
-            <p className="text-sm text-neutral-300 text-center leading-relaxed">
-              {/* {data.bio} */}
-            </p>
-
             <div className="flex gap-2">
               <button
                 onClick={() =>
@@ -171,9 +172,9 @@ const Page = () => {
               >
                 Message
               </button>
-              <button className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-sm py-2 rounded-lg border border-neutral-700 transition">
-                {data.socialLink}
-              </button>
+              <a href={`${data.socialLink}`} className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-sm py-2 rounded-lg border border-neutral-700 transition text-center">
+                social link
+              </a>
             </div>
           </div>
         </div>
@@ -268,48 +269,5 @@ const Page = () => {
     </div>
   );
 };
-
-async function fetchData(): Promise<ProfileData | 404> {
-  const res = await fetch("/api/get/profiledata", {
-    credentials: "include",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch profile data");
-  }
-  console.log("the raw data", res);
-  const data = await res.json();
-  console.log("this is the data i got", data);
-
-  if (data.status == 404) {
-    console.log("i got the 404 status here, le'me chack");
-    console.log(data);
-    return 404;
-  } else if (data.status == 200) {
-    return data.data as ProfileData;
-  }
-
-  throw new Error("Unexpected response from server");
-}
-
-async function fetchStacks(view: InViewType): Promise<BaseStack[]> {
-  console.log("this is the view before sending",view)
-  const res = await fetch("/api/get/userstacks", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ currentView: view }),
-  });
-
-  const jsonData = await res.json();
-  console.log("this is the stack data",jsonData);
-
-  if (!res.ok ) {
-    throw new Error(jsonData.message || "Failed to fetch stacks");
-  }
-console.log("Threre you go champ",jsonData.data);
-  return jsonData.data as BaseStack[];
-}
 
 export default Page;

@@ -19,13 +19,7 @@ export async function GET() {
 console.log("connected to mongodb from profile");
 
     const userData = await User.findById(userId)
-      .select(["toolsMostUsed", "about", "socialLink", "projects", "ideas"])
-      .populate([
-        "projects.created",
-        "projects.collaborated",
-        "ideas.created",
-        "ideas.collaborated",
-      ]);
+      .select(["toolsMostUsed", "about", "socialLink","profileImage", "projects", "ideas"])
 
 console.log("dont know but the userData is",userData);
 
@@ -44,15 +38,19 @@ console.log("returning the no profile data now");
 
     const created =
       userData.projects.created.length + userData.ideas.created.length;
+    const profileImage=userData.profileImage;
+
+  console.log("the about me backend",userData.about)
 
     const profileData = {
       about: userData.about,
       socialLink: userData.socialLink,
       tools: userData.toolsMostUsed,
-      totalCollaborations,
+      totalCollaborations,      
       createdTotal: created,
       projects: userData.projects,
       ideas: userData.ideas,
+      profileImage,
     };
 
     console.log("return the userData checked now",profileData);

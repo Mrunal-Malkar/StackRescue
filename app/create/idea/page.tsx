@@ -1,5 +1,6 @@
 "use client"
 import Sidebar from "@/components/sidebar";
+import Loader from "@/components/ui/Loader";
 import { ToastProvider } from "@base-ui/react";
 import {
   Image as ImageIcon,
@@ -10,7 +11,8 @@ import {
   Plus,
   ArrowUpRight,
 } from "lucide-react";
-import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -29,6 +31,7 @@ const Idea = () => {
   const [categoryInput, setCategoryInput] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [PreviewImageUrl, setPreviewImageUrl] = useState<string>("");
+  const session=useSession();
   const {
     register,
     watch,
@@ -48,6 +51,21 @@ const Idea = () => {
     const allData = { ...data, categories, roles };
     postIdea(allData)  
 };
+
+useEffect(() => {
+  if (session.status === "unauthenticated") {
+    toast.info("you cannot post stacks without signing up..");
+  }
+}, [session.status]);
+
+if (session.status === "loading") {
+  return (
+    <div className="w-screen h-screen flex justify-center items-center">
+      <Loader />
+    </div>
+  );
+}
+
 
   async function postIdea(data:Input){
     const formData=new FormData();

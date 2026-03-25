@@ -40,6 +40,7 @@ export default function ProfileModal({
     formData.append("profileImage", Data.image[0]);
     formData.append("socialLink", Data.link);
     formData.append("tools", tools.toString());
+    formData.append("about",Data.about);
 
     const request = await fetch("/api/create/profile", {
       method: "POST",
@@ -52,7 +53,8 @@ export default function ProfileModal({
         res.message ? res.message : "error creating a profile, try again later",
       );
     } else if (res.status == 200) {
-        router.push(
+      onClose();
+        return router.push(
             session.data?.user.email
               ? `/profile/${session.data?.user.email}`
               : "/explore",

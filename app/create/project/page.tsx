@@ -4,12 +4,14 @@ import { error } from "console";
 import {
   HelpCircle,
   Layers,
+  Loader,
   Plus,
   Rocket,
   Target,
   UploadCloud,
 } from "lucide-react";
-import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -50,7 +52,7 @@ export default function CreateProjectPage() {
   const [catagories, setCatagories] = useState<string[]>([]);
   const uiuxProgress = watch("uiuxProgress");
   const backendProgress = watch("backendProgress");
-
+  const session=useSession();
   const { ref, onChange, ...rest } = register("image", {
     required: "Image is required",
     validate: {
@@ -115,6 +117,21 @@ export default function CreateProjectPage() {
       return false;
     }
   }
+
+  useEffect(() => {
+    if (session.status === "unauthenticated") {
+      toast.info("you cannot post stacks without signing up..");
+    }
+  }, [session.status]);
+  
+  if (session.status === "loading") {
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
+  }
+  
 
   const onSubmit: SubmitHandler<Input> = async (data) => {
     if (catagories.length < 1) {

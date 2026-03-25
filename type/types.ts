@@ -34,6 +34,7 @@ export interface ProfileFormInputs {
 
 
 export type ProfileData = {
+  profileImage:string,
   about: string;
   socialLink: string;
   tools: string[];
