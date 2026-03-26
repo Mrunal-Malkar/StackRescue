@@ -1,5 +1,5 @@
 "use client";
-import { StackCardType } from "@/type/types";
+import { GeneralStackType, StackCardType } from "@/type/types";
 import React, { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -10,395 +10,124 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 export const ExploreStack = () => {
-  const [currentStack, setCurrentStack] = useState<StackCardType>();
+  const [currentStack, setCurrentStack] = useState<GeneralStackType>();
   const [ShowStackModal, setShowStackModal] = useState<boolean>(false);
-  const router=useRouter();
-  const {data,error,isLoading}=useQuery({
-    queryKey:["stack-card"],
-    queryFn:async()=>{
-      const res=await fetch("api/get/stacks",{method:"GET"});
-      if(!res || res.status!=200){ 
+  const router = useRouter();
+  const { data:stacks, error, isLoading } = useQuery<GeneralStackType[]>({
+    queryKey: ["stack-card"],
+    queryFn: async () => {
+      const res = await fetch("api/get/stacks", { method: "GET" });
+      const resJson = await res.json();
+      if (!res.ok || !resJson) {
         toast.error("unable to fetch stacks");
-        return Error("Unable to fetch stacks.")}
-      const resJson=await res.json()
-      const stacks=resJson.stacks;
-        console.log("got the explore stacks",stacks);
+        throw new Error(resJson.message?resJson.message:"Unable to fetch stacks.");
+      }
+      const stacks:GeneralStackType[] = resJson.stacks;
+      console.log("got the explore stacks", stacks);
       return stacks;
-    }
-  })
-  const session=useSession();
-  const stacks: Array<StackCardType> = [
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
     },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "Project Title goes here",
-      description:
-        "lskdjfaldkfjal;dskfjasldkfja dslfjkasdfkdsfl adlkjasf kadfkjasldf kasaldkfj saldkfj asladkf jasdfhjasldek; ajsdfaj sdalfjk asldf ajkdsf jkadsfkasdf jal;sdf jkalsdjf l;sakdjf l;asdkjf a;lsdfj als;dkjf a;lsdj fal;sdkfjalsd falsdf jkasdf jalsdkfj asl",
-      attributes: [
-        {
-          label: "stack type",
-          value: "idea",
-        },
-        {
-          label: "role",
-          value: "frontend dev",
-        },
-        {
-          label: "stage",
-          value: "pre-production",
-        },
-      ],
-    },
-    {
-      title: "project title 2 here",
-      description:
-        "lorem asldfkjalsdkfjlashfdjkpsaojhagnl;akfjdsf asdkhjfnlaskajdnf ahdisjkflaksf lsadikhfjaalsofnjl;ask.df jaoisldhfjupsaldkfnmal;isfd jaoplisdkhfjuasldkfnml;isadkfj saodifjalsdkfjm asdoifhjaosdifhjaldskfjn asdifuhjalsed",
-      attributes: [
-        {
-          label: "stack type",
-          value: "project",
-        },
-        {
-          label: "role req",
-          value: "backend dev",
-        },
-        {
-          label: "stage",
-          value: "pre deployment",
-        },
-      ],
-    },
-    {
-      title: "project title 2 here",
-      description:
-        "lorem asldfkjalsdkfjlashfdjkpsaojhagnl;akfjdsf asdkhjfnlaskajdnf ahdisjkflaksf lsadikhfjaalsofnjl;ask.df jaoisldhfjupsaldkfnmal;isfd jaoplisdkhfjuasldkfnml;isadkfj saodifjalsdkfjm asdoifhjaosdifhjaldskfjn asdifuhjalsed",
-      attributes: [
-        {
-          label: "stack type",
-          value: "project",
-        },
-        {
-          label: "role req",
-          value: "backend dev",
-        },
-        {
-          label: "stage",
-          value: "pre deployment",
-        },
-      ],
-    },
-  ];
+  });
+  const session = useSession();
 
-  function showStack(stack: StackCardType) {
+  function showStack(stack: GeneralStackType) {
     setCurrentStack(stack);
     setShowStackModal(true);
   }
 
-  if(session.status=="loading" || isLoading){
-    return <div className="min-w-full min-h-full bg-gray-800 flex justify-center items-center">
-      <Loader/>
-    </div>
+
+  if (session.status == "loading" || isLoading) {
+    return (
+      <div className="min-w-full min-h-full bg-gray-800 flex justify-center items-center">
+        <Loader />
+      </div>
+    );
   }
 
-  if(session.status=="unauthenticated" || error){
-    if(session.status=="unauthenticated"){
-      return toast.info("login to see full stack details");
-    }else if(error){
-      return toast.error("error in getting stacks.");
+  if (session.status == "unauthenticated" || error) {
+    if (session.status == "unauthenticated") {
+     toast.info("login to see full stack details");
+    } else if (error) {
+     toast.error("error in getting stacks.");
     }
   }
 
-  if(data.length<1 && !error && !isLoading){
-    return <div className="min-w-full min-h-full bg-gray-800 flex justify-center items-center">
-      <p className="text-center text-gray-300 hover:cursor-pointer" onClick={()=>router.push("/create/project")}>No Stacks, Create One!</p>
-    </div>
+  if (stacks && stacks.length < 1 && !error && !isLoading) {
+    return (
+      <div className="min-w-full min-h-full bg-gray-800 flex justify-center items-center">
+        <p
+          className="text-center text-gray-300 hover:cursor-pointer"
+          onClick={() => router.push("/create/project")}
+        >
+          No Stacks, Create One!
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full w-full flex juistify-center items-center">
+        <p className="text-center flex justify-center items-center w-full h-full text-red-700">{error && error.message? error.message :" Some error, occured."}</p>
+      </div>
+    );
   }
 
   return (
     <div className="w-full h-full overflow-y-auto text-black p-2 sm:p-6 justify-around gap-6 gap-y-16  flex flex-wrap">
       {/* stack cards */}
-      {stacks.map((item, i) => {
-        return (
-          <div
-            key={i}
-            onClick={() => showStack(item)}
-            className="group flex flex-col justify-between p-4 md:w-1/2 h-1/3 bg-neutral-900 hover:bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all duration-200 cursor-pointer"
-          >
-            {/* Title */}
-            <div className="flex flex-col gap-2">
-              <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-blue-400 group-hover:text-blue-300 transition">
-                {item.title}
-              </h1>
+      {stacks &&
+        stacks.map((item, i) => {
+            return (<div
+              key={i}
+              onClick={() => showStack(item)}
+              className="group flex flex-col justify-between p-4 md:w-1/2 h-1/3 bg-neutral-900 hover:bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all duration-200 cursor-pointer"
+            >
+              {/* Title */}
+              <div className="flex flex-col gap-2">
+                <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-blue-400 group-hover:text-blue-300 transition">
+                  {item.title}
+                </h1>
 
-              {/* Description */}
-              <p className="text-sm sm:text-base text-neutral-300 line-clamp-3">
-                {item.description}
-              </p>
-            </div>
+                {/* Description */}
+                <p className="text-sm sm:text-base text-neutral-300 line-clamp-3">
+                  {item.description}
+                </p>
+              </div>
 
-            {/* Attributes */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              {item.attributes.map((attribute, i) => {
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700"
-                  >
-                    <span className="text-neutral-400">{attribute.label}</span>
-                    <span className="text-neutral-200">{attribute.value}</span>
-                  </div>
-                );
-              })}
-            </div>
+              {/* Attributes */}
+              {item.categories.map((attribute,i)=>{
+                return (<div key={i} className="flex flex-wrap gap-2 mt-4">
+                <div className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700">
+                  {" "}
+                  <span className="text-neutral-400">category</span>
+                  <span className="text-neutral-200">{attribute}</span>
+                </div>
+              </div>)})}
 
-            {/* Footer */}
-            <div className="flex justify-between items-center mt-4 pt-3 border-t border-neutral-800 text-xs text-neutral-500 group-hover:text-neutral-300 transition">
-              <span>View stack</span>
-              <span className="group-hover:translate-x-1 transition-transform">
-                →
-              </span>
-            </div>
-          </div>
-        );
-      })}
+              {/* Footer */}
+              <div 
+              onClick={() => showStack(item)} className="flex justify-between items-center mt-4 pt-3 border-t border-neutral-800 text-xs text-neutral-500 group-hover:text-neutral-300 transition">
+                <span>View stack</span>
+                <span className="group-hover:translate-x-1 transition-transform">
+                  →
+                </span>
+              </div>
+            </div>)
+})}
 
       {/* stack modal */}
-      <StackModal stack={currentStack} isOpen={ShowStackModal} onClose={()=>setShowStackModal(false)} />
+      <StackModal
+        stack={currentStack}
+        isOpen={ShowStackModal}
+        onClose={() => setShowStackModal(false)}
+      />
 
-{/* explore footer  */}
-<ExploreFooter/>
-<ToastContainer/>
+      {/* explore footer  */}
+      <ExploreFooter />
+      <ToastContainer />
     </div>
   );
 };
-
-
 
 const ExploreFooter = () => {
   return (

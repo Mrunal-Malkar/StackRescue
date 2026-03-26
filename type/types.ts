@@ -71,4 +71,47 @@ export type sortedAllStackType=(IdeaStackType | ProjectStackType )
 
 export type InViewType="Posted"|"Collaborated"|"All"
 
-export type StackModalType=InferSchemaType<typeof Project> | InferSchemaType<typeof Idea>;
+
+type BaseStackForBoth = {
+  _id: string;
+  title: string;
+  description: string;
+
+  image?: {
+    secure_url?: string;
+    public_id?: string;
+  };
+
+  categories: string[];
+  roles: string[];
+  requiredSkills: string[];
+
+  createdBy: string;
+  collaborators: string[];
+
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProjectType = BaseStackForBoth & {
+  type: "project";
+
+  buildProgress: {
+    uiux: number;
+    backend: number;
+  };
+
+  projectType: string;
+  reasonForLeavingProject: string;
+
+  toolsUsed: string[];
+
+  liveLink: string;
+  repoLink: string;
+};
+
+export type IdeaType = BaseStackForBoth & {
+  type: "idea";
+};
+
+export type GeneralStackType = ProjectType | IdeaType;

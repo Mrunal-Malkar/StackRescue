@@ -18,15 +18,18 @@ export async function GET(req: NextRequest) {
 
     await connectDB();
 
-    const projects = await Project.find()
+    const projectsRaw = await Project.find()
       .sort({ createdAt: -1 })
       .limit(5)
       .lean();
 
-    const ideas = await Idea.find()
+    const ideasRaw = await Idea.find()
       .sort({ createdAt: -1 })
       .limit(5)
       .lean();
+
+    const projects=projectsRaw.map((p)=>({...p,type:"project"}));
+    const ideas=ideasRaw.map((i)=>({...i,type:"idea"}));
 
     const sortedStacks = [...projects, ...ideas].sort(
       (a, b) =>

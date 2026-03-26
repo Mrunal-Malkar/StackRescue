@@ -15,7 +15,7 @@ const Explore = () => {
           <FilterComponent />
         </div>
         <div className="w-full flex flex-col h-full">
-          <ExploreStack />
+           <ExploreStack />
         </div>
       </div>
     </div>

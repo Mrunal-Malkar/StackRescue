@@ -3,7 +3,6 @@ import connectDB from "@/lib/connectDB";
 import User from "@/lib/schemaUser";
 import Project from "@/lib/schemaProjects";
 import saveImage from "@/app/functions/CloudinaryUploadImage";
-import { useSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authProvider } from "@/lib/auth";
 
