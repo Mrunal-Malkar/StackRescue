@@ -3,9 +3,22 @@ import connectDB from "@/app/../lib/connectDB";
 import User from "@/lib/schemaUser";
 import Idea from "@/lib/schemaIdeas";
 import saveImage from "@/app/functions/CloudinaryUploadImage";
+import { getServerSession } from "next-auth";
+import { authProvider } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
+      const session = await getServerSession(authProvider);
+        if (!session) {
+          return NextResponse.json(
+            {
+              message: "Unauthorized reequest",
+            },
+            { status: 401 },
+          );
+        }
+    
+
     await connectDB();
     const formData = await req.formData();
     if (!formData) {
@@ -15,6 +28,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const userId=session.user.id;
     const title = (formData.get("title")?.toString() || "").trim();
     const description = (formData.get("description")?.toString() || "").trim();
     let categories: string[] = [];
@@ -63,15 +77,6 @@ export async function POST(req: NextRequest) {
 
     const imageUrl = await saveImage(imageFile,"idea");
 
-    const userEmail =
-      formData.get("userEmail")?.toString() || "guest@devgarage.local";
-    const userName = formData.get("userName")?.toString() || "Guest User";
-
-    let user = await User.findOne({ email: userEmail });
-    if (!user) {
-      user = await User.create({ email: userEmail, name: userName });
-    }
-
     const idea = await Idea.create({
       title,
       description,
@@ -79,10 +84,10 @@ export async function POST(req: NextRequest) {
       categories,
       roles,
       requiredSkills,
-      createdBy: user._id,
+      createdBy: userId,
     });
 
-    await User.findByIdAndUpdate(user._id, {
+    await User.findByIdAndUpdate(userId, {
       $push: { "ideas.created": idea._id }
     });
 

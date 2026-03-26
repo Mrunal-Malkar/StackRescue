@@ -72,6 +72,7 @@ if (session.status === "loading") {
 
 
   async function postIdea(data:Input){
+    setPublishing(true);
     const formData=new FormData();
     formData.append("title",data.title);
     formData.append("description",data.description); 
@@ -87,10 +88,12 @@ if (session.status === "loading") {
     const response = await req.json();
     if(req.status==200){
       toast.success(response.message);
+      setPublishing(false);
       console.log(response);
     }else{
       console.log(response)
       toast.error(response.message);
+      setPublishing(false);
     }
   }
 
