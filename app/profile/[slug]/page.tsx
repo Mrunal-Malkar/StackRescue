@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Sidebar from "../../../components/sidebar";
 import {
   BaseStack,
   InViewType,
-  ProfileData,
 } from "../../../type/types";
 import { useSession } from "next-auth/react";
 import SignInPage from "@/components/sign-in";
@@ -234,6 +233,7 @@ const Page = () => {
               stacks.map((item) => {
                 return (
                   <div
+                  onClick={()=>Modal}
                     key={item.title}
                     className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2"
                   >

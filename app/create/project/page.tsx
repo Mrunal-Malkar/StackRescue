@@ -1,11 +1,9 @@
 "use client"
 import Sidebar from "@/components/sidebar";
-import { error } from "console";
 import {
   HelpCircle,
   Layers,
   Loader,
-  Plus,
   Rocket,
   Target,
   UploadCloud,
@@ -26,6 +24,8 @@ type Input = {
   catagories: string[];
   projectType: string;
   roles: string[];
+  liveLink?: string;
+  repoLink?: string;
 };
 
 export default function CreateProjectPage() {
@@ -101,6 +101,12 @@ export default function CreateProjectPage() {
     form.append("backendProgress",formData.backendProgress.toString());
     form.append("projectType",formData.projectType);
     form.append("reasonForLeavingProject",formData.reasonForLeavingProject);
+    if (formData.liveLink) {
+      form.append("liveLink", formData.liveLink);
+    }
+    if (formData.repoLink) {
+      form.append("repoLink", formData.repoLink);
+    }
     console.log("this is the form at frontend before sending to backend",form);
     const req=await fetch("/api/create/project",{
       method:"POST",
@@ -126,7 +132,7 @@ export default function CreateProjectPage() {
   
   if (session.status === "loading") {
     return (
-      <div className="w-screen h-screen flex justify-center items-center">
+      <div className="w-screen h-screen bg-gray-800 flex justify-center items-center">
         <Loader />
       </div>
     );
@@ -386,6 +392,50 @@ export default function CreateProjectPage() {
                       </p>
                     )}
 
+                    <div className="space-y-2 mt-4">
+                      <label className="text-sm font-bold uppercase tracking-wider text-neutral-500 ml-1">
+                        Live URL (optional)
+                      </label>
+                      <input
+                        {...register("liveLink", {
+                          pattern: {
+                            value: /^(https?:\/\/)?.+$/i,
+                            message: "Please enter a valid URL",
+                          },
+                        })}
+                        type="text"
+                        placeholder="https://example.com"
+                        className="w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-3 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
+                      />
+                      {errors.liveLink && (
+                        <p className="text-sm text-red-400 mt-1">
+                          {errors.liveLink.message?.toString()}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 mt-4">
+                      <label className="text-sm font-bold uppercase tracking-wider text-neutral-500 ml-1">
+                        Repo URL (optional)
+                      </label>
+                      <input
+                        {...register("repoLink", {
+                          pattern: {
+                            value: /^(https?:\/\/)?.+$/i,
+                            message: "Please enter a valid URL",
+                          },
+                        })}
+                        type="text"
+                        placeholder="https://github.com/user/repo"
+                        className="w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-3 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
+                      />
+                      {errors.repoLink && (
+                        <p className="text-sm text-red-400 mt-1">
+                          {errors.repoLink.message?.toString()}
+                        </p>
+                      )}
+                    </div>
+
                     <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 flex flex-wrap gap-2">
                       {catagories.map((cat, i) => (
                         <span
@@ -441,21 +491,6 @@ export default function CreateProjectPage() {
                         className="flex-1 bg-transparent outline-none text-sm p-2"
                       />
                     </div>
-
-                    {/* <div className="relative">
-                      <input
-                        {...register("requiredRoles", { required: "Required roles is required" })}
-                        type="text"
-                        placeholder="required role:frontend developer,backend developer"
-                        className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 pr-12 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                      />
-                      <Plus className="absolute right-4 top-4 text-neutral-500 w-5 h-5" />
-                      {errors.requiredRoles && (
-                        <p className="text-sm text-red-400 mt-1">
-                          {errors.requiredRoles.message?.toString()}
-                        </p>
-                      )}
-                    </div> */}
                   </div>
                 </div>
 

@@ -70,3 +70,5 @@ export type BaseStack = {
 export type sortedAllStackType=(IdeaStackType | ProjectStackType )
 
 export type InViewType="Posted"|"Collaborated"|"All"
+
+export type StackModalType=InferSchemaType<typeof Project> | InferSchemaType<typeof Idea>;

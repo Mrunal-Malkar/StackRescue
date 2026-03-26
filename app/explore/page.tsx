@@ -5,6 +5,7 @@ import Sidebar from "@/components/sidebar";
 import Image from "next/image";
 
 const Explore = () => {
+  
   return (
     <div className="sm:w-screen min-h-screen flex overflow-hidden bg-black text-white">
       <Sidebar />

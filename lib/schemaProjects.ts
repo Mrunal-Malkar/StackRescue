@@ -54,6 +54,16 @@ const ProjectStackSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    liveLink: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    repoLink: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

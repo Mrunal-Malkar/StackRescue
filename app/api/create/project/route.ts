@@ -18,6 +18,9 @@ export async function POST(req: NextRequest) {
     const title = (formData.get("title")?.toString() || "").trim();
     const description = (formData.get("description")?.toString() || "").trim();
     const projectType = (formData.get("projectType")?.toString() || "").trim();
+    const liveLink=(formData.get("liveLink")?.toString() || "").trim();
+    const repoLink=(formData.get("repoLink")?.toString() || "").trim();
+    
     const reasonForLeavingProject = (
       formData.get("reasonForLeavingProject")?.toString() || ""
     ).trim();
@@ -94,6 +97,8 @@ export async function POST(req: NextRequest) {
       image: imageUrl,
       categories,
       roles,
+      liveLink,
+      repoLink,
       buildProgress: {
         uiux: uiuxProgress,
         backend: backendProgress,
