@@ -26,6 +26,8 @@ type Input = {
   roles: string[];
   liveLink?: string;
   repoLink?: string;
+  requiredSkills?: string[];
+  toolsUsed?: string[];
 };
 
 export default function CreateProjectPage() {
@@ -50,6 +52,11 @@ export default function CreateProjectPage() {
   const [roles, setRoles] = useState<string[]>([]);
   const [catagoryInput, setCatagoryInput] = useState("");
   const [catagories, setCatagories] = useState<string[]>([]);
+  const [skillInput, setSkillInput] = useState("");
+  const [requiredSkills, setRequiredSkills] = useState<string[]>([]);
+  const [publishing,setPublishing]=useState(false);
+  const [toolInput, setToolInput] = useState("");
+  const [toolsUsed, setToolsUsed] = useState<string[]>([]);
   const uiuxProgress = watch("uiuxProgress");
   const backendProgress = watch("backendProgress");
   const session=useSession();
@@ -89,14 +96,38 @@ export default function CreateProjectPage() {
     }
   }
 
+  function handleAddSkill(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newSkill = skillInput.trim();
+      if (newSkill && !requiredSkills.includes(newSkill)) {
+        setRequiredSkills([...requiredSkills, newSkill]);
+        setSkillInput("");
+      }
+    }
+  }
+
+  function handleAddTool(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newTool = toolInput.trim();
+      if (newTool && !toolsUsed.includes(newTool)) {
+        setToolsUsed([...toolsUsed, newTool]);
+        setToolInput("");
+      }
+    }
+  }
+
   async function postProject(formData:Input){
-    console.log("thjis is the form",formData)
+    setPublishing(true);
     const form=new FormData();
     form.append("title",formData.title);
     form.append("description",formData.description);
     form.append("image",formData.image[0]);
     form.append("categories",JSON.stringify(formData.catagories));
     form.append("roles",JSON.stringify(formData.roles));
+    form.append("requiredSkills",JSON.stringify(requiredSkills));
+    form.append("toolsUsed",JSON.stringify(toolsUsed));
     form.append("uiuxProgress",formData.uiuxProgress.toString());
     form.append("backendProgress",formData.backendProgress.toString());
     form.append("projectType",formData.projectType);
@@ -163,8 +194,15 @@ export default function CreateProjectPage() {
         setCatagories([]);
         setRoleInput("");
         setCatagoryInput("");
+        setRequiredSkills([]);
+        setSkillInput("");
+        setToolsUsed([]);
+        setToolInput("");
+        setPublishing(false);
       })
-      .catch(() => toast.error("Failed to create project"));
+      .catch(() =>{
+        toast.error("Failed to create project")});
+        setPublishing(false);
   };
 
   return (
@@ -204,7 +242,7 @@ export default function CreateProjectPage() {
               >
                 <span className="relative z-10 flex items-center gap-2">
                   <Rocket className="w-5 h-5" />
-                  Publish Project
+                  {publishing?"Publishing...":"Publish Project"}
                 </span>
               </button>
             </div>
@@ -491,6 +529,70 @@ export default function CreateProjectPage() {
                         className="flex-1 bg-transparent outline-none text-sm p-2"
                       />
                     </div>
+
+                    <div className="space-y-2 mt-6">
+                      <label className="text-sm font-bold uppercase tracking-wider text-neutral-500 ml-1">
+                        Required Skills
+                      </label>
+                      <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 flex flex-wrap gap-2">
+                        {requiredSkills.map((skill, i) => (
+                          <span
+                            key={`skill-${i}`}
+                            className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-lg text-sm flex items-center gap-2"
+                          >
+                            {skill}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setRequiredSkills(requiredSkills.filter((_, idx) => idx !== i))
+                              }
+                              className="text-red-400"
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        ))}
+                        <input
+                          value={skillInput}
+                          onChange={(e) => setSkillInput(e.target.value)}
+                          onKeyDown={handleAddSkill}
+                          placeholder="Add skill and press Enter"
+                          className="flex-1 bg-transparent outline-none text-sm p-2"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 mt-6">
+                      <label className="text-sm font-bold uppercase tracking-wider text-neutral-500 ml-1">
+                        Tools Used
+                      </label>
+                      <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 flex flex-wrap gap-2">
+                        {toolsUsed.map((tool, i) => (
+                          <span
+                            key={`tool-${i}`}
+                            className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-lg text-sm flex items-center gap-2"
+                          >
+                            {tool}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setToolsUsed(toolsUsed.filter((_, idx) => idx !== i))
+                              }
+                              className="text-red-400"
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        ))}
+                        <input
+                          value={toolInput}
+                          onChange={(e) => setToolInput(e.target.value)}
+                          onKeyDown={handleAddTool}
+                          placeholder="Add tool and press Enter"
+                          className="flex-1 bg-transparent outline-none text-sm p-2"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -520,7 +622,7 @@ export default function CreateProjectPage() {
 
             {/* MOBILE ONLY SUBMIT */}
             <div className="md:hidden pt-8">
-              <label htmlFor="submit">PUBLISH PROJECT</label>
+              <label htmlFor="submit">{publishing?"Publishing...":"Publish Project"}</label>
               <input
                 type="submit"
                 name="submit"

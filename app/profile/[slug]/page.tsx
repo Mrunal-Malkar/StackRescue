@@ -233,7 +233,7 @@ const Page = () => {
               stacks.map((item) => {
                 return (
                   <div
-                  onClick={()=>Modal}
+                  onClick={()=>{}}
                     key={item.title}
                     className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2"
                   >

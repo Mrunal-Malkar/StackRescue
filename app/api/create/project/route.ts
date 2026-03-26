@@ -3,9 +3,24 @@ import connectDB from "@/lib/connectDB";
 import User from "@/lib/schemaUser";
 import Project from "@/lib/schemaProjects";
 import saveImage from "@/app/functions/CloudinaryUploadImage";
+import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authProvider } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authProvider);
+    if (!session) {
+      return NextResponse.json(
+        {
+          message: "Unauthorized reequest",
+        },
+        { status: 401 },
+      );
+    }
+
+    const userId = session.user.id;
+
     await connectDB();
     const formData = await req.formData();
     if (!formData) {
@@ -18,9 +33,9 @@ export async function POST(req: NextRequest) {
     const title = (formData.get("title")?.toString() || "").trim();
     const description = (formData.get("description")?.toString() || "").trim();
     const projectType = (formData.get("projectType")?.toString() || "").trim();
-    const liveLink=(formData.get("liveLink")?.toString() || "").trim();
-    const repoLink=(formData.get("repoLink")?.toString() || "").trim();
-    
+    const liveLink = (formData.get("liveLink")?.toString() || "").trim();
+    const repoLink = (formData.get("repoLink")?.toString() || "").trim();
+
     const reasonForLeavingProject = (
       formData.get("reasonForLeavingProject")?.toString() || ""
     ).trim();
@@ -33,12 +48,18 @@ export async function POST(req: NextRequest) {
 
     let categories: string[] = [];
     let roles: string[] = [];
+    let requiredSkills: string[] = [];
+    let toolsUsed: string[] = [];
     try {
       categories = JSON.parse(formData.get("categories")?.toString() || "[]");
       roles = JSON.parse(formData.get("roles")?.toString() || "[]");
+      requiredSkills = JSON.parse(
+        formData.get("requiredSkills")?.toString() || "[]",
+      );
+      toolsUsed = JSON.parse(formData.get("toolsUsed")?.toString() || "[]");
     } catch (e) {
       return NextResponse.json(
-        { message: "Categories and roles must be arrays" },
+        { message: "Categories, roles, skills and tools must be arrays" },
         { status: 400 },
       );
     }
@@ -80,16 +101,7 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
-    const imageUrl = await saveImage(imageFile,"project");
-
-    const userEmail =
-      formData.get("userEmail")?.toString() || "guest@devgarage.local";
-    const userName = formData.get("userName")?.toString() || "Guest User";
-
-    let user = await User.findOne({ email: userEmail });
-    if (!user) {
-      user = await User.create({ email: userEmail, name: userName });
-    }
+    const imageUrl = await saveImage(imageFile, "project");
 
     const project = await Project.create({
       title,
@@ -97,6 +109,8 @@ export async function POST(req: NextRequest) {
       image: imageUrl,
       categories,
       roles,
+      requiredSkills,
+      toolsUsed,
       liveLink,
       repoLink,
       buildProgress: {
@@ -105,11 +119,11 @@ export async function POST(req: NextRequest) {
       },
       projectType,
       reasonForLeavingProject,
-      createdBy: user._id,
+      createdBy: userId,
     });
 
-    await User.findByIdAndUpdate(user._id, {
-      $push: { "projects.created": project._id }
+    await User.findByIdAndUpdate(userId, {
+      $push: { "projects.created": project._id },
     });
 
     return NextResponse.json(

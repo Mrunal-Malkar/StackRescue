@@ -36,21 +36,31 @@ const UserSchema = new mongoose.Schema(
       created: {
         type: [mongoose.Schema.Types.ObjectId],
         default: [],
+        ref:"Project"
+
       },
       collaborated: {
         type: [mongoose.Schema.Types.ObjectId],
         default: [],
+        ref:"Project"
       },
     },
     ideas: {
-      created: {
+      created:{
         type: [mongoose.Schema.Types.ObjectId],
         default: [],
+
+        ref:"Idea"
       },
-      collaborated: {
+      collaborated:{
         type: [mongoose.Schema.Types.ObjectId],
         default: [],
+        ref:"Idea"
       },
+    },
+    requests:{
+      type:[mongoose.Schema.Types.ObjectId],
+      default:[],
     }
   },
   { timestamps: true },

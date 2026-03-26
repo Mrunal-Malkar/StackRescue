@@ -1,7 +1,6 @@
 "use client"
 import Sidebar from "@/components/sidebar";
 import Loader from "@/components/ui/Loader";
-import { ToastProvider } from "@base-ui/react";
 import {
   Image as ImageIcon,
   Hash,
@@ -10,6 +9,7 @@ import {
   Send,
   Plus,
   ArrowUpRight,
+  Layers,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -23,6 +23,7 @@ const Idea = () => {
     image: FileList;
     categories: string[];
     roles: string[];
+    requiredSkills?: string[];
   };
 
   const acceptedTypes=["image/png","image/jpeg","image/jpg"]
@@ -30,6 +31,9 @@ const Idea = () => {
   const [roles, setRoles] = useState<string[]>([]);
   const [categoryInput, setCategoryInput] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
+  const [publishing,setPublishing]=useState(false);
+  const [skillInput, setSkillInput] = useState("");
+  const [requiredSkills, setRequiredSkills] = useState<string[]>([]);
   const [PreviewImageUrl, setPreviewImageUrl] = useState<string>("");
   const session=useSession();
   const {
@@ -74,6 +78,7 @@ if (session.status === "loading") {
     formData.append("image",data.image[0]);
     formData.append("categories",JSON.stringify(data.categories));
     formData.append("roles",JSON.stringify(data.roles));
+    formData.append("requiredSkills",JSON.stringify(requiredSkills));
 
     const req=await fetch("/api/create/idea",{
       method:"POST",
@@ -106,6 +111,17 @@ if (session.status === "loading") {
       if (categoryInput.trim() && !categories.includes(categoryInput.trim())) {
         setCategories([...categories, categoryInput.trim()]);
         setCategoryInput("");
+      }
+    }
+  }
+
+  function handleAddSkill(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newSkill = skillInput.trim();
+      if (newSkill && !requiredSkills.includes(newSkill)) {
+        setRequiredSkills([...requiredSkills, newSkill]);
+        setSkillInput("");
       }
     }
   }
@@ -147,7 +163,7 @@ if (session.status === "loading") {
               form="idea-form"
               className="hidden md:flex items-center gap-3 px-10 py-5 bg-cyan-500 hover:bg-cyan-400 text-black font-black rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(6,182,212,0.3)]"
             >
-              LAUNCH CONCEPT <ArrowUpRight className="w-5 h-5" />
+              {publishing?"Launching...":"LAUNCH CONCEPT"} <ArrowUpRight className="w-5 h-5" />
             </button>
           </header>
 
@@ -347,12 +363,52 @@ if (session.status === "loading") {
                 )}
               </div>
 
+              {/* TECH STACK / REQUIRED SKILLS */}
+              <div className="bg-slate-900/40 border border-slate-800 rounded-[2.5rem] p-8 space-y-6">
+                <div className="flex items-center gap-3 text-amber-400">
+                  <Layers className="w-5 h-5" />
+                  <span className="text-sm font-bold uppercase tracking-wider">
+                    Required Skills / Tech Stack
+                  </span>
+                </div>
+                <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 flex flex-wrap gap-2">
+                  {requiredSkills.map((skill, i) => (
+                    <span
+                      key={i}
+                      className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-lg text-sm flex items-center gap-2"
+                    >
+                      {skill}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setRequiredSkills(
+                            requiredSkills.filter((_, idx) => idx !== i),
+                          )
+                        }
+                        className="text-red-400"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  ))}
+
+                  <input
+                    type="text"
+                    value={skillInput}
+                    onChange={(e) => setSkillInput(e.target.value)}
+                    onKeyDown={handleAddSkill}
+                    placeholder="Add skills and press Enter"
+                    className="flex-1 bg-transparent outline-none text-sm p-2"
+                  />
+                </div>
+              </div>
+
               {/* MOBILE ONLY SUBMIT */}
               <button
                 type="submit"
                 className="md:hidden w-full py-6 bg-cyan-500 text-black font-black rounded-[2rem] flex items-center justify-center gap-3"
               >
-                LAUNCH IDEA <Send className="w-5 h-5" />
+                {publishing?"Launching...":"LAUNCH IDEA"} <Send className="w-5 h-5" />
               </button>
             </div>
           </form>

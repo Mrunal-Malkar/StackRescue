@@ -336,7 +336,7 @@ export const ExploreStack = () => {
 
   if(data.length<1 && !error && !isLoading){
     return <div className="min-w-full min-h-full bg-gray-800 flex justify-center items-center">
-      <p className="text-center text-gray-300" onClick={()=>router.push("/create/project")}>No Stacks, Create One!</p>
+      <p className="text-center text-gray-300 hover:cursor-pointer" onClick={()=>router.push("/create/project")}>No Stacks, Create One!</p>
     </div>
   }
 

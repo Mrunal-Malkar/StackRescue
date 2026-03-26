@@ -19,13 +19,15 @@ export async function POST(req: NextRequest) {
     const description = (formData.get("description")?.toString() || "").trim();
     let categories: string[] = [];
     let roles: string[] = [];
+    let requiredSkills: string[] = [];
 
     try {
       categories = JSON.parse(formData.get("categories")?.toString() || "[]");
       roles = JSON.parse(formData.get("roles")?.toString() || "[]");
+      requiredSkills = JSON.parse(formData.get("requiredSkills")?.toString() || "[]");
     } catch (e) {
       return NextResponse.json(
-        { message: "Categories and roles must be arrays" },
+        { message: "Categories, roles and skills must be arrays" },
         { status: 400 },
       );
     }
@@ -76,6 +78,7 @@ export async function POST(req: NextRequest) {
       image: imageUrl,
       categories,
       roles,
+      requiredSkills,
       createdBy: user._id,
     });
 

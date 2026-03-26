@@ -11,7 +11,7 @@ async function fetchStacks(view: InViewType): Promise<BaseStack[]> {
   });
 
   const jsonData = await res.json();
-  console.log("this is the stack data",jsonData);
+  console.log("this is the stack data for profile",jsonData);
 
   if (!res.ok ) {
     throw new Error(jsonData.message || "Failed to fetch stacks");
