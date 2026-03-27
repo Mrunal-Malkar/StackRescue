@@ -32,6 +32,7 @@ export interface ProfileFormInputs {
   tools: string[]; // exactly 3 tools
 }
 
+export type requestType={name:string,id:string, email:string ,profileImage:string}
 
 export type ProfileData = {
   profileImage:string,
@@ -48,6 +49,7 @@ export type ProfileData = {
     created: IdeaStackType[];
     collaborated: IdeaStackType[];
   };
+  requests:requestType[];
 };
 
 export type ProjectStackType=InferSchemaType<typeof Project> & {

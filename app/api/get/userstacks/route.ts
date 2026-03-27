@@ -1,8 +1,11 @@
 import { authProvider } from "@/lib/auth";
 import connectDB from "@/lib/connectDB";
+import Idea from "@/lib/schemaIdeas";
+import Project from "@/lib/schemaProjects";
 import User from "@/lib/schemaUser";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+
 
 export async function POST(req: NextRequest) {
     try {
@@ -41,7 +44,6 @@ export async function POST(req: NextRequest) {
         );
 
     } catch (e) {
-        console.error(e);
         return NextResponse.json(
             { message: "Internal server error" },
             { status: 500 }
@@ -76,10 +78,10 @@ async function getStack(View: string, userId: string) {
 
             case "all": {
                 await user.populate([
-                    "projects.created",
-                    "projects.collaborated",
-                    "ideas.created",
-                    "ideas.collaborated"
+                    { path: "projects.created", model: Project },
+                    { path: "projects.collaborated", model: Project },
+                    { path: "ideas.created", model: Idea },
+                    { path: "ideas.collaborated", model: Idea }
                 ]);
 
                 const allItems = [
@@ -98,8 +100,8 @@ async function getStack(View: string, userId: string) {
 
             case "collaborated": {
                 await user.populate([
-                    "projects.collaborated",
-                    "ideas.collaborated"
+                    { path: "projects.collaborated", model: Project },
+                    { path: "ideas.collaborated", model: Idea }
                 ]);
 
                 const collaboratedItems = [
@@ -116,8 +118,8 @@ async function getStack(View: string, userId: string) {
 
             case "posted": {
                 await user.populate([
-                    "projects.created",
-                    "ideas.created"
+                    { path: "projects.created", model: Project },
+                    { path: "ideas.created", model: Idea }
                 ]);
 
                 const postedItems = [
@@ -141,8 +143,6 @@ async function getStack(View: string, userId: string) {
         }
 
     } catch (error) {
-        console.error("Error in getStack:", error);
-
         return {
             success: false,
             error: "Failed to fetch stacks",

@@ -17,8 +17,6 @@ export const Navbar = () => {
 
   React.useEffect(() => {
     const handleScroll = () => {
-      console.log(window.scrollY);
-      console.log(isScrolled);
       setIsScrolled(window.scrollY > 10 ? true : false);
     };
 

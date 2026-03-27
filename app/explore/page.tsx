@@ -2,7 +2,6 @@ import { ExploreStack } from "@/components/exploreStack";
 import FilterComponent from "@/components/filtercomponent";
 import SearchBar from "@/components/searchbar";
 import Sidebar from "@/components/sidebar";
-import Image from "next/image";
 
 const Explore = () => {
   

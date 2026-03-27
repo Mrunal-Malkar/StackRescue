@@ -89,10 +89,8 @@ if (session.status === "loading") {
     if(req.status==200){
       toast.success(response.message);
       setPublishing(false);
-      console.log(response);
     }else{
-      console.log(response)
-      toast.error(response.message);
+     toast.error(response.message);
       setPublishing(false);
     }
   }

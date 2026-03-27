@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "User created/updated successfully", user }, { status: 200 });
   } catch (error: unknown) {
-    console.error("User route error:", error);
     return NextResponse.json({ message: "Some error occurred", error: error instanceof Error ? error.message : "unknown" }, { status: 500 });
   }
 }

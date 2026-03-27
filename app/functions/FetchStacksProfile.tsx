@@ -1,7 +1,6 @@
 import { BaseStack, InViewType } from "@/type/types";
 
 async function fetchStacks(view: InViewType): Promise<BaseStack[]> {
-  console.log("this is the view before sending",view)
   const res = await fetch("/api/get/userstacks", {
     method: "POST",
     headers: {
@@ -11,12 +10,10 @@ async function fetchStacks(view: InViewType): Promise<BaseStack[]> {
   });
 
   const jsonData = await res.json();
-  console.log("this is the stack data for profile",jsonData);
 
   if (!res.ok ) {
     throw new Error(jsonData.message || "Failed to fetch stacks");
   }
-console.log("Threre you go champ",jsonData.data);
   return jsonData.data as BaseStack[];
 }
 export default fetchStacks

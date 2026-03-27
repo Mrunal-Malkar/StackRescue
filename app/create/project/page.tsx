@@ -138,7 +138,6 @@ export default function CreateProjectPage() {
     if (formData.repoLink) {
       form.append("repoLink", formData.repoLink);
     }
-    console.log("this is the form at frontend before sending to backend",form);
     const req=await fetch("/api/create/project",{
       method:"POST",
       body:form
@@ -146,10 +145,8 @@ export default function CreateProjectPage() {
     const response = await req.json();
     if(req.status==200){
       toast.success(response.message);
-      console.log(response);
       return true;
     }else{
-      console.log(response)
       toast.error(response.message);
       return false;
     }
@@ -184,7 +181,6 @@ export default function CreateProjectPage() {
     }
 
     const formData = { ...data, roles, catagories };
-    console.log("Form data at Project", formData);
 
     await postProject(formData)
       .then(() => {
@@ -292,7 +288,6 @@ export default function CreateProjectPage() {
                     onChange={(e) => {
                       onChange(e);
                       const file = e.target.files ? e.target.files[0] : null;
-                      console.log("selected file type", file?.type);
                       if (file) {
                         setPreviewImageUrl(URL.createObjectURL(file));
                       }

@@ -19,7 +19,6 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     const authorId = data.userId;
 
-    console.log("this is the data",data,"and author id",authorId);
     if (!data || !authorId) {
       return NextResponse.json(
         { message: "data is required" },
@@ -35,8 +34,6 @@ export async function POST(req: NextRequest) {
       "email",
       "profileImage"
     ]);
-
-    console.log("the author detail",authorDetails);
 
     return NextResponse.json({ data: authorDetails }, { status: 200 });
   } catch (e) {

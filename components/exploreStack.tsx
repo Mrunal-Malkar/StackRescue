@@ -23,7 +23,6 @@ export const ExploreStack = () => {
         throw new Error(resJson.message?resJson.message:"Unable to fetch stacks.");
       }
       const stacks:GeneralStackType[] = resJson.stacks;
-      console.log("got the explore stacks", stacks);
       return stacks;
     },
   });

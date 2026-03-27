@@ -49,7 +49,6 @@ const UserSchema = new mongoose.Schema(
       created:{
         type: [mongoose.Schema.Types.ObjectId],
         default: [],
-
         ref:"Idea"
       },
       collaborated:{

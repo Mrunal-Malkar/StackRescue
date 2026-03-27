@@ -62,18 +62,15 @@ export async function POST(req: NextRequest) {
     });
 
     if (!user) {
-        console.log("was not able to find user while updating profile");
       return NextResponse.json({ status: 404, message: "User not found!" });
     }
 
-    console.log("got the user and updated it!",user);
 
     return NextResponse.json({
       status: 200,
       message: "Profile updated successfully!",
     });
   } catch (error: unknown) {
-    console.error("Profile update error:", error);
     return NextResponse.json({ status: 500, message: "Internal server error" });
   }
 }

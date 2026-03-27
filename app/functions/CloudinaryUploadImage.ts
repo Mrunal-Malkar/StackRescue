@@ -34,7 +34,6 @@ export default async function saveImage(
         stream.end(buffer);
       },
     );
-    console.log("done with uploading image");
 
     if (!uploadResult || !uploadResult.secure_url) {
       throw new Error("Upload failed - no secure URL returned");
@@ -46,7 +45,6 @@ export default async function saveImage(
     };
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Upload Error:", error.message);
       if (error.message.includes("File too large")) {
         throw error;
       }
@@ -60,8 +58,6 @@ export default async function saveImage(
 
 async function convertFileToBinary(file: File): Promise<Buffer> {
   const arrayBuffer = await file.arrayBuffer();
-  console.log("this is the arraybuffer",arrayBuffer);
   const buffer=Buffer.from(arrayBuffer);
-  console.log("buffer",buffer);
   return buffer
 }

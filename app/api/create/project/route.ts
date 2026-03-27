@@ -130,7 +130,6 @@ export async function POST(req: NextRequest) {
       { status: 200 },
     );
   } catch (error: unknown) {
-    console.error("Project creation error:", error);
     return NextResponse.json(
       {
         message: "Some error occurred",

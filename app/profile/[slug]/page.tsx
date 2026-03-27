@@ -5,6 +5,7 @@ import Sidebar from "../../../components/sidebar";
 import {
   BaseStack,
   InViewType,
+  requestType,
 } from "../../../type/types";
 import { useSession } from "next-auth/react";
 import SignInPage from "@/components/sign-in";
@@ -13,6 +14,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   LucideChartNoAxesColumnDecreasing,
   Plus,
+  Rewind,
   ScanLine,
   Undo2,
 } from "lucide-react";
@@ -22,6 +24,7 @@ import { toast, ToastContainer } from "react-toastify";
 import fetchStacks from "@/app/functions/FetchStacksProfile";
 import fetchData from "@/app/functions/FetchProfileData";
 import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 
 const Page = () => {
   const { data: session, status } = useSession();
@@ -128,6 +131,8 @@ const Page = () => {
     );
   }
 
+  function handleAcceptRequest(stackId:string){}
+
   return (
     <div className="w-full relative h-screen min-h-screen bg-neutral-950 text-white flex">
       <ToastContainer />
@@ -206,8 +211,57 @@ const Page = () => {
             </div>
           </div>
 
+          {/* requests */}
+        <div className="flex flex-col gap-6">
+  <h1 className="text-2xl font-semibold text-white">Requests</h1>
+
+  {data.requests?.length <1 && (
+    <p className="text-sm text-neutral-400">No incoming requests.</p>
+  )}
+
+  <div className="flex flex-col gap-3">
+    {data.requests?.map((req:requestType) => (
+      <div
+        key={req.id}
+        className="flex items-center justify-between bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 hover:border-neutral-700 transition"
+      >
+        {/* LEFT: User Info */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-neutral-800 border border-neutral-700">
+            {req.profileImage ? (
+              <Image
+              height={200}
+              width={100}
+                src={req.profileImage}
+                alt={req.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-xs text-neutral-500">
+                N/A
+              </div>
+            )}
+          </div>
+
+          <span className="text-sm hover:cursor-pointer hover:underline md:text-base text-white font-medium">
+            {req.name.toUpperCase()}
+          </span>
+        </div>
+
+        {/* RIGHT: Accept Button */}
+        <button
+          onClick={() => handleAcceptRequest(req.id)}
+          className="px-4 py-1.5 text-sm rounded-lg bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 transition"
+        >
+          Accept
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
+
           {/* NAVIGATION */}
-          <div className="flex gap-3 overflow-x-auto border-b border-neutral-800 pb-2 text-sm">
+          <div className="flex gap-3 mt-5 overflow-x-auto border-b border-neutral-800 pb-2 text-sm">
             {(["Posted", "Collaborated","All"] as InViewType[]).map((view) => (
               <button
                 key={view}

@@ -25,7 +25,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const session = useSession();
   const isLoggedIn = session.status === "authenticated";
   const pathname = usePathname();
-  console.log(pathname);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = () => {
