@@ -115,3 +115,10 @@ export type IdeaType = BaseStackForBoth & {
 };
 
 export type GeneralStackType = ProjectType | IdeaType;
+
+export type AuthorType={
+  name:string,
+  email:string,
+  about:string,
+  profileImage:string,
+}
