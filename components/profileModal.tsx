@@ -48,18 +48,16 @@ export default function ProfileModal({
     });
     const res = await request.json();
 
-    if (!res || res.status != 200) {
+    if (!res ) {
       return toast.error(
         res.message ? res.message : "error creating a profile, try again later",
       );
     } else if (res.status == 200) {
-      onClose();
-        return router.push(
-            session.data?.user.email
-              ? `/profile/${session.data?.user.email}`
-              : "/explore",
-          );
       toast.success("profile created!, redirecting...");
+      onClose();
+      setTimeout(()=>{
+         window.location.reload();
+      },2500)
   }
   }
   const onSubmit = async (data: ProfileFormInputs) => {

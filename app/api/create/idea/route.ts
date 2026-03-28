@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
       image: imageUrl,
       categories,
       roles,
+      stackType:"idea",
       requiredSkills,
       createdBy: userId,
     });

@@ -23,6 +23,10 @@ const IdeaSchema = new mongoose.Schema({
     required: true,
     default: [],
   },
+  stackType:{
+    type:String,
+    required:true,
+  }, 
   requiredSkills: {
     type: [String],
     default: [],

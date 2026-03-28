@@ -31,7 +31,6 @@ export async function POST(req: NextRequest) {
 
     const title = (formData.get("title")?.toString() || "").trim();
     const description = (formData.get("description")?.toString() || "").trim();
-    const projectType = (formData.get("projectType")?.toString() || "").trim();
     const liveLink = (formData.get("liveLink")?.toString() || "").trim();
     const repoLink = (formData.get("repoLink")?.toString() || "").trim();
 
@@ -63,7 +62,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!title || !description || !projectType || !reasonForLeavingProject) {
+    if (!title || !description || !reasonForLeavingProject) {
       return NextResponse.json(
         { message: "All project fields are required" },
         { status: 400 },
@@ -116,7 +115,7 @@ export async function POST(req: NextRequest) {
         uiux: uiuxProgress,
         backend: backendProgress,
       },
-      projectType,
+      stackType:"project",
       reasonForLeavingProject,
       createdBy: userId,
     });

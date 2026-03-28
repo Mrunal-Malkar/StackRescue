@@ -7,63 +7,103 @@ const UserSchema = new mongoose.Schema(
       required: true,
       default: "Guest",
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
     },
+
     password: {
       type: String,
       default: "",
     },
+
     profileImage: {
       type: String,
       default: "",
     },
-    about:{
-      type:String,
-      default:""
+
+    about: {
+      type: String,
+      default: "",
     },
-    socialLink:{
-      type:String,
-      default:""
+
+    socialLink: {
+      type: String,
+      default: "",
     },
-    toolsMostUsed:{
-      type:Array,
+
+    toolsMostUsed: {
+      type: [String],
       default: [],
     },
-    projects: {
-      created: {
-        type: [mongoose.Schema.Types.ObjectId],
-        default: [],
-        ref:"Project"
 
-      },
-      collaborated: {
-        type: [mongoose.Schema.Types.ObjectId],
-        default: [],
-        ref:"Project"
-      },
+    projects: {
+      created: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Project",
+        },
+      ],
     },
+
+    // this is the primary collaborated key, which is to be used for both , projects and idea.
+    collaborated: [
+      {
+        requestedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        stackId: {
+          type: mongoose.Schema.Types.ObjectId,
+          refPath: "stackType",
+        },
+        stackType: {
+          type: String,
+          enum: ["project", "idea"],
+        },
+      },
+    ],
+
     ideas: {
-      created:{
-        type: [mongoose.Schema.Types.ObjectId],
-        default: [],
-        ref:"Idea"
-      },
-      collaborated:{
-        type: [mongoose.Schema.Types.ObjectId],
-        default: [],
-        ref:"Idea"
-      },
+      created: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Idea",
+        },
+      ]
     },
-    requests:{
-      type:[mongoose.Schema.Types.ObjectId],
-      ref:"User",
-      default:[],
-    }
+
+    requests: [
+      {
+        requestedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+
+        stackId: {
+          type: mongoose.Schema.Types.ObjectId,
+          refPath: "stackType", 
+          required: true,
+        },
+
+        stackType: {
+          type: String,
+          enum: ["project", "idea"],
+          required: true,
+        },
+
+        status: {
+          type: String,
+          enum: ["pending", "rejected", "accepted"],
+          default: "pending",
+        },
+      },
+    ],
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

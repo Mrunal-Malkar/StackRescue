@@ -3,10 +3,13 @@ import User from "@/lib/schemaUser";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-async function getUserId(Email: string | undefined) {
+async function getUserId(email: string | undefined) {
+  if (!email) return null;
+
   await connectDB();
-  const userId = await User.findOne({ email: Email }).select("_id");
-  return userId;
+
+  const user = await User.findOne({ email }).select("_id");
+  return user?._id?.toString();
 }
 
 export const authProvider: NextAuthOptions = {
@@ -25,42 +28,46 @@ export const authProvider: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user}) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = await getUserId(user.email ?? "");
+        token.picture=user.image
       }
       return token;
     },
+
     session({ session, token }) {
-      if (session.user) session.user.id = token.id;
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.image=token.picture;
+      }
       return session;
     },
     async signIn({ user, account }) {
-      if (account != undefined && account.provider != "google"){return false;}
+      if (!account || account.provider !== "google") return false;
       await connectDB();
+
       const dbUser = await User.findOne({ email: user.email });
       if (!dbUser) {
         const newUser = await User.create({
           email: user.email,
-          name: user.name,
+          name: user.name || "Guest",
           password: "",
-          profileImage: "",
+          profileImage: user.image || "",
           projects: {
             created: [],
-            collaborated: [],
           },
           ideas: {
             created: [],
-            collaborated: [],
           },
+          collaborated: [],
+          requests: [],
           about: "",
-          toolsMostUsed: []
+          socialLink: "",
+          toolsMostUsed: [],
         });
 
-        if (newUser) {
-          return true;
-        }
-        return false;
+        return !!newUser;
       }
       return true;
     },

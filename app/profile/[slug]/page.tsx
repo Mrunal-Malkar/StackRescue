@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import Sidebar from "../../../components/sidebar";
-import {
-  BaseStack,
-  InViewType,
-  requestType,
-} from "../../../type/types";
+import { BaseStack, InViewType, requestType } from "../../../type/types";
 import { useSession } from "next-auth/react";
 import SignInPage from "@/components/sign-in";
 import Loader from "@/components/ui/Loader";
@@ -22,7 +18,7 @@ import ProfileModal from "@/components/profileModal";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import fetchStacks from "@/app/functions/FetchStacksProfile";
-import fetchData from "@/app/functions/FetchProfileData";
+import {fetchData} from "@/app/functions/FetchProfileData";
 import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 
@@ -43,11 +39,11 @@ const Page = () => {
     error: stacksError,
     isLoading: isStacksLoading,
     isFetching: isStacksFetching,
-  } = useQuery<BaseStack[], Error>({
+  } = useQuery<BaseStack[],Error>({
     queryKey: ["stacks", InView],
     queryFn: () => fetchStacks(InView),
     enabled: status === "authenticated",
-    placeholderData:keepPreviousData,
+    placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 2,
   });
 
@@ -72,8 +68,9 @@ const Page = () => {
   }
 
   if (error) {
+    console.log("the error is",error)
     return (
-      <div className="w-screen relative h-screen flex flex-col justify-center items-center gap-2">
+      <div className="w-screen bg-gray-800 relative h-screen flex flex-col justify-center items-center gap-2">
         <div
           className="absolute top-15 left-18 cursor-pointer"
           onClick={() => {
@@ -83,9 +80,9 @@ const Page = () => {
           <Undo2 className="text-white size-8 cursor-pointer" />
         </div>
         <div>
-          <LucideChartNoAxesColumnDecreasing className="size-6" />
-          <p className="text-gray-400 font-semibold">
-            Some error occurred, please try again later.
+          <LucideChartNoAxesColumnDecreasing className="size-6 text-gray-300" />
+          <p className="font-semibold text-gray-300">
+            {error.message?error.message:"Some error occurred, please try again later."}
           </p>
         </div>
       </div>
@@ -131,7 +128,7 @@ const Page = () => {
     );
   }
 
-  function handleAcceptRequest(stackId:string){}
+  function handleAcceptRequest(requestedBy: string, stackId: string) {}
 
   return (
     <div className="w-full relative h-screen min-h-screen bg-neutral-950 text-white flex">
@@ -176,7 +173,10 @@ const Page = () => {
               >
                 Message
               </button>
-              <a href={`${data.socialLink}`} className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-sm py-2 rounded-lg border border-neutral-700 transition text-center">
+              <a
+                href={`${data.socialLink}`}
+                className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-sm py-2 rounded-lg border border-neutral-700 transition text-center"
+              >
                 social link
               </a>
             </div>
@@ -212,57 +212,73 @@ const Page = () => {
           </div>
 
           {/* requests */}
-        <div className="flex flex-col gap-6">
-  <h1 className="text-2xl font-semibold text-white">Requests</h1>
+          <div className="flex flex-col gap-6">
+            <h1 className="text-2xl font-semibold text-white">Requests</h1>
 
-  {data.requests?.length <1 && (
-    <p className="text-sm text-neutral-400">No incoming requests.</p>
-  )}
-
-  <div className="flex flex-col gap-3">
-    {data.requests?.map((req:requestType) => (
-      <div
-        key={req.id}
-        className="flex items-center justify-between bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 hover:border-neutral-700 transition"
-      >
-        {/* LEFT: User Info */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-neutral-800 border border-neutral-700">
-            {req.profileImage ? (
-              <Image
-              height={200}
-              width={100}
-                src={req.profileImage}
-                alt={req.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-xs text-neutral-500">
-                N/A
-              </div>
+            {data.requests?.length < 1 && (
+              <p className="text-sm text-neutral-400">No incoming requests.</p>
             )}
+
+            <div className="flex flex-col gap-3">
+              {data.requests?.map((req: requestType) => (
+                <div
+                  key={req.requestedBy._id + req.stackId?._id}
+                  className="flex items-center justify-between bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 hover:border-neutral-700 transition"
+                >
+                  {/* LEFT */}
+                  <div className="flex items-center gap-3">
+                    {/* Avatar */}
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-neutral-800 border border-neutral-700">
+                      {req.requestedBy.profileImage ? (
+                        <Image
+                          height={200}
+                          width={100}
+                          src={req.requestedBy.profileImage}
+                          alt={req.requestedBy.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-xs text-neutral-500">
+                          N/A
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Name + Stack */}
+                    <div className="flex flex-col leading-tight">
+                      <span className="text-sm md:text-base text-white font-medium hover:underline cursor-pointer">
+                        {req.requestedBy.name.toUpperCase()}
+                      </span>
+
+                      {/* 🔥 Stack Name */}
+                      {req.stackId?.title && (
+                        <span className="text-xs text-neutral-400">
+                          requested to collaborate on{" "}
+                          <span className="text-sky-400 font-medium">
+                            {req.stackId.title}
+                          </span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* RIGHT */}
+                  <button
+                    onClick={() =>
+                      handleAcceptRequest(req.requestedBy._id, req.stackId?._id)
+                    }
+                    className="px-4 py-1.5 text-sm rounded-lg bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 transition"
+                  >
+                    Accept
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-
-          <span className="text-sm hover:cursor-pointer hover:underline md:text-base text-white font-medium">
-            {req.name.toUpperCase()}
-          </span>
-        </div>
-
-        {/* RIGHT: Accept Button */}
-        <button
-          onClick={() => handleAcceptRequest(req.id)}
-          className="px-4 py-1.5 text-sm rounded-lg bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 transition"
-        >
-          Accept
-        </button>
-      </div>
-    ))}
-  </div>
-</div>
 
           {/* NAVIGATION */}
           <div className="flex gap-3 mt-5 overflow-x-auto border-b border-neutral-800 pb-2 text-sm">
-            {(["Posted", "Collaborated","All"] as InViewType[]).map((view) => (
+            {(["Posted", "Collaborated", "All"] as InViewType[]).map((view) => (
               <button
                 key={view}
                 onClick={() => setInView(view)}
@@ -287,11 +303,13 @@ const Page = () => {
               stacks.map((item) => {
                 return (
                   <div
-                  onClick={()=>{}}
+                    onClick={() => {}}
                     key={item.title}
                     className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2"
                   >
-                    <h3 className="font-semibold text-blue-400">{item.title}</h3>
+                    <h3 className="font-semibold text-blue-400">
+                      {item.title}
+                    </h3>
                     <p className="text-sm text-neutral-400 line-clamp-2">
                       {item.description}
                     </p>

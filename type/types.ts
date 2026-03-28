@@ -32,7 +32,34 @@ export interface ProfileFormInputs {
   tools: string[]; // exactly 3 tools
 }
 
-export type requestType={name:string,id:string, email:string ,profileImage:string}
+export type requestType={
+  requestedBy:{
+    _id:string,
+    profileImage:string,
+    email:string,
+    name:string,
+  },
+  stackId:{
+    _id:string,
+    title:string,
+  },
+  status:"pending"|"rejected"|"accepted"
+}
+
+export type CollaborateType={
+    requestedBy:{
+    _id:string,
+    profileImage:string,
+    email:string,
+    name:string,
+    status:"pending"|"rejected"|"accepted"
+  },
+  stackId:{
+    _id:string,
+    title:string,
+  },
+  stackType:"Project"|"Idea",
+}
 
 export type ProfileData = {
   profileImage:string,
@@ -43,13 +70,12 @@ export type ProfileData = {
   createdTotal: number;
   projects: {
     created: ProjectStackType[];
-    collaborated: ProjectStackType[];
   };
   ideas: {
     created: IdeaStackType[];
-    collaborated: IdeaStackType[];
   };
   requests:requestType[];
+  collaborated:CollaborateType[];
 };
 
 export type ProjectStackType=InferSchemaType<typeof Project> & {
@@ -124,3 +150,7 @@ export type AuthorType={
   about:string,
   profileImage:string,
 }
+
+export type UnifiedStack = GeneralStackType & {
+  stackType?: "Project" | "Idea";
+};

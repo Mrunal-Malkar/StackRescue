@@ -56,13 +56,17 @@ const StackModal = ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ authorId: stack?.createdBy }),
+        body: JSON.stringify({
+          authorId: stack?.createdBy,
+          stackId,
+          stackType: stack?.type,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok || !data) {
         setCollaborating(false);
-        toast.error("some error occured.");
+        toast.error(data.message ? data.message : "some error occured.");
         throw new Error("Unable to get user.");
       }
       if (data) {

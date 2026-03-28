@@ -97,11 +97,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               redirect(`/profile/${session.data.user.email || "user"}`)
             }
           >
-            <img
+            <Image
               src={
-                session.data.user.image ||
-                "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=32&h=32&fit=crop&crop=face"
-              }
+                session.data.user.image }
+              width={150}
+              height={100}
               alt={session.data.user.name || "User"}
               className="size-8 rounded-full"
             />

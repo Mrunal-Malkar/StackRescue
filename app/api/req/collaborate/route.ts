@@ -7,52 +7,79 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authProvider);
+
     if (!session) {
       return NextResponse.json(
         { message: "Unauthorized request" },
-        { status: 401 },
+        { status: 401 }
       );
     }
+    const { authorId, stackId, stackType } = await req.json();
     const userId = session.user.id;
-    const body = await req.json();
-    const authorId = body.authorId;
 
-    if (userId == authorId) {
+    if (!authorId || !stackId || !stackType) {
       return NextResponse.json(
-        { message: "cannot send collaboration request to yourself" },
-        { status: 400 },
+        { message: "Missing required fields" },
+        { status: 400 }
       );
     }
 
-    if (!authorId) {
+    // if (userId === authorId) {
+    //   return NextResponse.json(
+    //     { message: "Cannot send request to yourself" },
+    //     { status: 400 }
+    //   );
+    // }
+
+    if (!["Project", "Idea","project","idea"].includes(stackType)) {
       return NextResponse.json(
-        { message: "data is required" },
-        { status: 404 },
+        { message: "Invalid stack type" },
+        { status: 400 }
       );
     }
 
     await connectDB();
 
-    const author = await User.findOneAndUpdate(
-      {
-        _id: authorId,
-        requests: { $ne: userId },
+    const existing = await User.findOne({
+      _id: authorId,
+      requests: {
+        $elemMatch: {
+          requestedBy: userId,
+          stackId: stackId,
+        },
       },
+    });
+
+    if (existing) {
+      return NextResponse.json(
+        { message: "Request already sent" },
+        { status: 409 }
+      );
+    }
+
+    const author = await User.findByIdAndUpdate(
+      authorId,
       {
-        $push: { requests: userId },
+        $push: {
+          requests: {
+            requestedBy: userId,
+            stackId,
+            stackType,
+            status: "pending",
+          },
+        },
       },
-      { new: true },
+      { new: true }
     );
 
-    if (!author) {
-      return NextResponse.json({ message: "already sent!" }, { status: 201 });
-    }
-    
-    return NextResponse.json({ message: "request sent" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Request sent successfully" },
+      { status: 200 }
+    );
   } catch (e) {
     return NextResponse.json(
-      { message: "internal server error" },
-      { status: 500 },
+      { message: "Internal server error" },
+      { status: 500 }
     );
   }
 }
