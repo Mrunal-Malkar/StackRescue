@@ -14,7 +14,6 @@ export async function fetchData(): Promise<ProfileData | 404> {
   }
 
   const data = await res.json();
-  console.log("the data",data);
 
   return data.data as ProfileData;
 }

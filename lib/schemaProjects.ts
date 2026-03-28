@@ -38,7 +38,7 @@ const ProjectStackSchema = new mongoose.Schema(
         max: 100,
       },
     },
-    projectType: {
+    stackType: {
       type: String,
       required: true,
     },

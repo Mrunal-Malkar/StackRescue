@@ -61,7 +61,7 @@ const UserSchema = new mongoose.Schema(
         },
         stackType: {
           type: String,
-          enum: ["project", "idea"],
+          enum: ["Project", "Idea"],
         },
       },
     ],
@@ -91,7 +91,7 @@ const UserSchema = new mongoose.Schema(
 
         stackType: {
           type: String,
-          enum: ["project", "idea"],
+          enum: ["Project", "Idea"],
           required: true,
         },
 

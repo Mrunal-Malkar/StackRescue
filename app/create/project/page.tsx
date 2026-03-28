@@ -132,6 +132,7 @@ export default function CreateProjectPage() {
     form.append("backendProgress",formData.backendProgress.toString());
     form.append("projectType",formData.projectType);
     form.append("reasonForLeavingProject",formData.reasonForLeavingProject);
+    
     if (formData.liveLink) {
       form.append("liveLink", formData.liveLink);
     }

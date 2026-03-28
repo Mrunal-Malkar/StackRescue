@@ -91,6 +91,8 @@ async function getStack(View: string, userId: string) {
             new Date(a.createdAt).getTime()
         );
 
+        console.log("sorted array",sorted);
+
         return { success: true, data: sorted };
       }
 
@@ -140,7 +142,6 @@ async function getStack(View: string, userId: string) {
     }
 
   } catch (error) {
-    console.log("getStack error:", error);
     return {
       success: false,
       error: "Failed to fetch stacks",

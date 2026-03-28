@@ -32,7 +32,7 @@ export const ExploreStack = () => {
     setCurrentStack(stack);
     setShowStackModal(true);
   }
-
+                        
 
   if (session.status == "loading" || isLoading) {
     return (

@@ -83,9 +83,10 @@ export async function POST(req: NextRequest) {
       image: imageUrl,
       categories,
       roles,
-      stackType:"idea",
+      stackType:"Idea",
       requiredSkills,
       createdBy: userId,
+      collaborators:[],
     });
 
     await User.findByIdAndUpdate(userId, {

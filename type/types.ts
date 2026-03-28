@@ -33,17 +33,21 @@ export interface ProfileFormInputs {
 }
 
 export type requestType={
+  _id:string,
   requestedBy:{
     _id:string,
     profileImage:string,
     email:string,
     name:string,
   },
-  stackId:{
-    _id:string,
-    title:string,
-  },
+  stackId:string,
+  stackType:"Idea"|"Project",
   status:"pending"|"rejected"|"accepted"
+}
+
+export type RequestStackType={
+  stackId:string,
+  stackType:string,
 }
 
 export type CollaborateType={
@@ -89,6 +93,7 @@ export type IdeaStackType=InferSchemaType<typeof Idea> & {
 }
 
 export type BaseStack = {
+  _id:string
   title: string;
   description: string;
   tools:string[],
@@ -122,7 +127,7 @@ type BaseStackForBoth = {
 };
 
 export type ProjectType = BaseStackForBoth & {
-  type: "project";
+  type: "Project";
 
   buildProgress: {
     uiux: number;
@@ -139,7 +144,7 @@ export type ProjectType = BaseStackForBoth & {
 };
 
 export type IdeaType = BaseStackForBoth & {
-  type: "idea";
+  type: "Idea";
 };
 
 export type GeneralStackType = ProjectType | IdeaType;

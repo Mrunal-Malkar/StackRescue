@@ -1,6 +1,6 @@
-import { BaseStack, InViewType } from "@/type/types";
+import { BaseStack, GeneralStackType, InViewType } from "@/type/types";
 
-async function fetchStacks(view: InViewType): Promise<BaseStack[]> {
+async function fetchStacks(view: InViewType): Promise<GeneralStackType[]> {
   const res = await fetch("/api/get/userstacks", {
     method: "POST",
     headers: {
@@ -14,6 +14,6 @@ async function fetchStacks(view: InViewType): Promise<BaseStack[]> {
   if (!res.ok ) {
     throw new Error(jsonData.message || "Failed to fetch stacks");
   }
-  return jsonData.data as BaseStack[];
+  return jsonData.data as GeneralStackType[];
 }
 export default fetchStacks

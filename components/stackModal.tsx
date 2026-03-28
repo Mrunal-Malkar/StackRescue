@@ -115,7 +115,7 @@ const StackModal = ({
               ))}
 
               {/* project only */}
-              {stack.type === "project" && (
+              {stack.type === "Project" && (
                 <span className="px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/30">
                   {stack.projectType}
                 </span>
@@ -242,7 +242,7 @@ const StackModal = ({
           </div>
 
           {/* PROJECT ONLY SECTION */}
-          {stack.type === "project" && (
+          {stack.type === "Project" && (
             <>
               {/* Build Progress */}
               <div className="flex flex-col gap-3 pt-6 border-b border-neutral-700 pb-6">

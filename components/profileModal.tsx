@@ -53,11 +53,7 @@ export default function ProfileModal({
         res.message ? res.message : "error creating a profile, try again later",
       );
     } else if (res.status == 200) {
-      toast.success("profile created!, redirecting...");
-      onClose();
-      setTimeout(()=>{
-         window.location.reload();
-      },2500)
+    window.location.reload();
   }
   }
   const onSubmit = async (data: ProfileFormInputs) => {

@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
       .limit(5)
       .lean();
 
-    const projects=projectsRaw.map((p)=>({...p,type:"project"}));
-    const ideas=ideasRaw.map((i)=>({...i,type:"idea"}));
+    const projects=projectsRaw.map((p)=>({...p,type:"Project"}));
+    const ideas=ideasRaw.map((i)=>({...i,type:"Idea"}));
 
     const sortedStacks = [...projects, ...ideas].sort(
       (a, b) =>
