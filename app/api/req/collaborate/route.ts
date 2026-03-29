@@ -24,12 +24,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // if (userId === authorId) {
-    //   return NextResponse.json(
-    //     { message: "Cannot send request to yourself" },
-    //     { status: 400 }
-    //   );
-    // }
+    if (userId === authorId) {
+      return NextResponse.json(
+        { message: "Cannot send request to yourself" },
+        { status: 400 }
+      );
+    }
 
     if (!["Project", "Idea"].includes(stackType)) {
       return NextResponse.json(

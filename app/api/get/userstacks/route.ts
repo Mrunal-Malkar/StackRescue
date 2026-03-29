@@ -69,7 +69,6 @@ async function getStack(view: string, userId: string) {
       };
     }
 
-    // ✅ Helper: fetch collaborated safely (NO populate)
     const getCollaboratedStacks = async (): Promise<UnifiedStack[]> => {
       const map = new Map<string, UnifiedStack>();
 
