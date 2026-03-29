@@ -74,6 +74,7 @@ export const ExploreStack = () => {
   return (
     <div className="w-full h-full overflow-y-auto text-black p-2 sm:p-6 justify-around gap-6 gap-y-16  flex flex-wrap">
       {/* stack cards */}
+      <ToastContainer/>
       {stacks &&
         stacks.map((item, i) => {
             return (<div
@@ -123,7 +124,6 @@ export const ExploreStack = () => {
 
       {/* explore footer  */}
       <ExploreFooter />
-      <ToastContainer />
     </div>
   );
 };

@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
         $push: {
           requests: {
             requestedBy: userId,
+            to: authorId,
             stackId,
             stackType,
             status: "pending",

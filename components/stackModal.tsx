@@ -5,7 +5,7 @@ import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { cn } from "./utils/cn";
 
 const StackModal = ({
@@ -85,6 +85,7 @@ const StackModal = ({
 
   return (
     <div className="backdrop-blur-xs bg-black/40 fixed inset-0 z-50 flex justify-center items-center p-2 sm:p-0">
+      <ToastContainer/>
       <div className="relative h-5/6 md:h-11/12 sm:w-10/12 w-full bg-neutral-900 rounded-2xl p-2 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
         {/* close button */}
         <button

@@ -129,7 +129,7 @@ if (session.status === "loading") {
 
   return (
     <div className="w-screen h-screen flex">
-      <ToastContainer/>
+      <ToastContainer />
       <Sidebar />
       <div className="w-full min-h-screen overflow-y-auto bg-[#020617] text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-200 font-sans antialiased">
         {/* AMBIENT BACKGROUND ELEMENTS */}

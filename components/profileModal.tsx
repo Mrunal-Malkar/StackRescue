@@ -35,29 +35,46 @@ export default function ProfileModal({
   const session = useSession();
 
   async function AddProfileInfo(Data: ProfileFormInputs) {
-    const tools = Data.tools.map((t) => t.trim());
-    const formData = new FormData();
-    formData.append("profileImage", Data.image[0]);
-    formData.append("socialLink", Data.link);
-    formData.append("tools", tools.toString());
-    formData.append("about",Data.about);
+    try {
+      console.log("SUBMIT CALLED"); // 🔍 debug
 
-    const request = await fetch("/api/create/profile", {
-      method: "POST",
-      body: formData,
-    });
-    const res = await request.json();
+      const tools = Data.tools.map((t) => t.trim());
 
-    if (!res ) {
-      return toast.error(
-        res.message ? res.message : "error creating a profile, try again later",
-      );
-    } else if (res.status == 200) {
-    window.location.reload();
+      const formData = new FormData();
+      formData.append("profileImage", Data.image[0]);
+      formData.append("socialLink", Data.link);
+      formData.append("tools", tools.toString());
+      formData.append("about", Data.about);
+
+      const request = await fetch("/api/create/profile", {
+        method: "POST",
+        body: formData,
+      });
+
+      const res = await request.json();
+
+      console.log("RESPONSE:", res); // 🔍 debug
+
+      if (!request.ok) {
+        toast.error(res.message || "Error creating profile");
+        return;
+      }
+
+      toast.success("Profile created successfully!");
+
+      // optional delay so toast is visible
+      setTimeout(() => {
+        onClose();
+        window.location.reload();
+      }, 1000);
+
+    } catch (error) {
+      console.error("ERROR:", error);
+      toast.error("Something went wrong");
+    }
   }
-  }
+
   const onSubmit = async (data: ProfileFormInputs) => {
-    // Trim tools
     await AddProfileInfo(data);
   };
 
@@ -65,8 +82,8 @@ export default function ProfileModal({
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50">
-      <ToastContainer />
       <div className="bg-zinc-950 text-white w-full max-w-md rounded-2xl p-6 shadow-2xl border border-zinc-800">
+        <ToastContainer/>
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -78,12 +95,13 @@ export default function ProfileModal({
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Tools (3 inputs) */}
+
+          {/* TOOLS */}
           <div>
             <label className="text-sm text-zinc-400 flex items-center gap-2">
-              <Wrench size={14} /> Top 3 tools/software/language anything.You
-              use.
+              <Wrench size={14} /> Top 3 tools
             </label>
+
             <div className="grid grid-cols-3 gap-2 mt-2">
               {[0, 1, 2].map((i) => (
                 <input
@@ -100,29 +118,32 @@ export default function ProfileModal({
               ))}
             </div>
 
-            {/* Aggregate error display */}
-            {(errors.tools?.[0] || errors.tools?.[1] || errors.tools?.[2]) && (
+            {(errors.tools?.[0] ||
+              errors.tools?.[1] ||
+              errors.tools?.[2]) && (
               <p className="text-red-400 text-xs mt-1">
                 All three tools are required
               </p>
             )}
           </div>
 
-          {/* About */}
+          {/* ABOUT */}
           <div>
             <label className="text-sm text-zinc-400 flex items-center gap-2">
               <User size={14} /> About (min 20 words)
             </label>
+
             <textarea
               rows={4}
               {...register("about", {
-                required: "About section required",
+                required: "About required",
                 validate: (value: string) =>
                   value.trim().split(/\s+/).length >= 20 ||
                   "Minimum 20 words required",
               })}
               className="w-full mt-2 p-3 rounded-xl bg-zinc-900 border border-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
+
             {errors.about && (
               <p className="text-red-400 text-xs mt-1">
                 {errors.about.message}
@@ -130,78 +151,58 @@ export default function ProfileModal({
             )}
           </div>
 
-          {/* Profile Link */}
+          {/* LINK */}
           <div>
             <label className="text-sm text-zinc-400 flex items-center gap-2">
-              <LinkIcon size={14} /> Profile Link of any social platform
+              <LinkIcon size={14} /> Social Link
             </label>
+
             <input
               type="url"
-              placeholder="https://your-profile.com"
               {...register("link", {
-                required: "Profile link required",
+                required: "Link required",
                 pattern: {
                   value: /^(https?:\/\/).+/,
-                  message: "Enter a valid URL",
+                  message: "Enter valid URL",
                 },
               })}
               className="w-full mt-2 p-3 rounded-xl bg-zinc-900 border border-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
+
             {errors.link && (
-              <p className="text-red-400 text-xs mt-1">{errors.link.message}</p>
+              <p className="text-red-400 text-xs mt-1">
+                {errors.link.message}
+              </p>
             )}
           </div>
 
-          {/* Image Upload */}
+          {/* IMAGE */}
           <div>
             <label className="text-sm text-zinc-400 flex items-center gap-2 mb-2">
               <ImageIcon size={14} /> Profile Image
             </label>
 
-            <label className="w-full h-32 flex flex-col items-center justify-center rounded-xl border border-dashed border-zinc-700 bg-zinc-900 hover:bg-zinc-800 cursor-pointer overflow-hidden">
+            <label className="w-full h-32 flex items-center justify-center rounded-xl border border-dashed border-zinc-700 bg-zinc-900 cursor-pointer overflow-hidden">
               {preview ? (
                 <img
                   src={preview}
-                  alt="preview"
                   className="w-full h-full object-cover"
+                  alt="preview"
                 />
               ) : (
-                <div className="text-zinc-500 text-sm flex flex-col items-center">
-                  <ImageIcon size={20} />
-                  <span>Click to upload</span>
-                  <span className="text-xs">PNG, JPG under 3MB</span>
-                </div>
+                <span className="text-zinc-500 text-sm">
+                  Click to upload
+                </span>
               )}
 
               <input
                 type="file"
-                accept="image/png, image/jpeg, image/jpg"
+                accept="image/*"
                 {...register("image", {
-                  required: "Image is required",
-                  validate: {
-                    fileType: (files: FileList) => {
-                      const file = files?.[0];
-                      if (!file) return true;
-                      return (
-                        ["image/jpeg", "image/png", "image/jpg"].includes(
-                          file.type,
-                        ) || "Only JPG, JPEG, PNG allowed"
-                      );
-                    },
-                    fileSize: (files: FileList) => {
-                      const file = files?.[0];
-                      if (!file) return true;
-                      return (
-                        file.size <= 3 * 1024 * 1024 ||
-                        "File must be less than 3MB"
-                      );
-                    },
-                  },
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                  required: "Image required",
+                  onChange: (e) => {
                     const file = e.target.files?.[0];
-                    if (file) {
-                      setPreview(URL.createObjectURL(file));
-                    }
+                    if (file) setPreview(URL.createObjectURL(file));
                   },
                 })}
                 className="hidden"
@@ -215,23 +216,25 @@ export default function ProfileModal({
             )}
           </div>
 
-          {/* Buttons */}
+          {/* BUTTONS */}
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-sm"
+              className="px-4 py-2 rounded-lg bg-zinc-800"
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm"
+              className="px-4 py-2 rounded-lg bg-blue-600"
             >
               {isSubmitting ? "Saving..." : "Save"}
             </button>
           </div>
+
         </form>
       </div>
     </div>

@@ -37,10 +37,16 @@ const IdeaSchema = new mongoose.Schema({
     required: true,
   },
   collaborators: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+   {
+          requestedBy:{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+          author:{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      }
   ],
 }, { timestamps: true });
 

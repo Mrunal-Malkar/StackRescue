@@ -40,9 +40,14 @@ export type requestType={
     email:string,
     name:string,
   },
-  stackId:string,
+  to:{
+    _id:string,
+    profileImage:string,
+    email:string,
+    name:string,
+  },
+  stackId:string ,
   stackType:"Idea"|"Project",
-  status:"pending"|"rejected"|"accepted"
 }
 
 export type RequestStackType={

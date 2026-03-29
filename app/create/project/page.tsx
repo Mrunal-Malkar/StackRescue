@@ -204,8 +204,8 @@ export default function CreateProjectPage() {
 
   return (
     <div className="h-screen w-screen flex">
+      <ToastContainer/>
       <Sidebar />
-<ToastContainer/>
       <div className="w-full min-h-screen overflow-y-auto bg-[#050505] text-slate-200 selection:bg-indigo-500/30 selection:text-indigo-200 font-sans">
         {/* BACKGROUND DECORATION */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">

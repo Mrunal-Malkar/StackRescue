@@ -83,6 +83,12 @@ const UserSchema = new mongoose.Schema(
           required: true,
         },
 
+        to: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+
         stackId: {
           type: mongoose.Schema.Types.ObjectId,
           refPath: "stackType", 

@@ -27,7 +27,6 @@ import { fetchData } from "@/app/functions/FetchProfileData";
 import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import RequestStackModal from "@/components/requeststackmodal";
-import StackModal from "@/components/stackModal";
 import StackModalForProfile from "@/components/stackModalForProfile";
 
 const Page = () => {
@@ -36,9 +35,11 @@ const Page = () => {
   const [ShowRequestStackModal, setShowRequestStackModal] = useState(false);
   const [CurrentRequestStack, setCurrentRequestStack] =
     useState<RequestStackType>();
-const [ShowStackModel,setShowStackModel]=useState<boolean>(false);
-const [CurrentStackModel,setCurrentStackModel]=useState<GeneralStackType>();
+  const [ShowStackModel, setShowStackModel] = useState<boolean>(false);
+  const [CurrentStackModel, setCurrentStackModel] =
+    useState<GeneralStackType>();
   const [InView, setInView] = useState<InViewType>("All");
+const [isAccepting, setIsAccepting] = useState(false);
   const router = useRouter();
 
   const { data, error, isLoading } = useQuery({
@@ -142,18 +143,60 @@ const [CurrentStackModel,setCurrentStackModel]=useState<GeneralStackType>();
     );
   }
 
-  function handleAcceptRequest(
-    requestedBy: string,
-    stackId: string,
-    stackType: string,
-  ) {}
+
+async function handleAcceptRequest(
+  requestedBy: string,
+  stackId: string,
+  stackType: string,
+) {
+  if (!session?.user?.id) {
+    toast.error("You must be signed in to accept requests.");
+    return;
+  }
+
+  if (isAccepting) return;
+
+  setIsAccepting(true);
+
+  try {
+    const res = await fetch("/api/req/acceptRequest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        requestedBy,
+        to: session.user.id,
+        stackId,
+        stackType,
+      }),
+    });
+
+    const resJson = await res.json();
+
+    if (!res.ok) {
+      throw new Error(resJson.message || "Unable to accept request.");
+    }
+
+    toast.success(resJson.message || "Request accepted successfully!");
+    window.location.reload(); // ✅ added
+  } catch (error) {
+    toast.error(
+      error instanceof Error
+        ? error.message
+        : "Failed to accept the request."
+    );
+  } finally {
+    setIsAccepting(false);
+  }
+}
 
   function handleRequestClick(stackId: string, stackType: string) {
     setShowRequestStackModal(true);
     setCurrentRequestStack({ stackId, stackType });
   }
 
-  function handleStackClick(item:GeneralStackType){
+  function handleStackClick(item: GeneralStackType) {
     setShowStackModel(true);
     setCurrentStackModel(item);
   }
@@ -276,7 +319,7 @@ const [CurrentStackModel,setCurrentStackModel]=useState<GeneralStackType>();
                       )}
                     </div>
 
-                    {/* Name + Stack */}
+                    {/* Name */}
                     <div className="flex flex-col leading-tight">
                       <span className="text-sm md:text-base text-white font-medium hover:underline cursor-pointer">
                         {req.requestedBy.name.toUpperCase()}
@@ -284,18 +327,29 @@ const [CurrentStackModel,setCurrentStackModel]=useState<GeneralStackType>();
                     </div>
                   </div>
 
-                  {/* RIGHT */}
+                  {/* RIGHT BUTTON */}
                   <button
-                    onClick={() =>
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.nativeEvent.stopImmediatePropagation();
                       handleAcceptRequest(
                         req.requestedBy._id,
                         req.stackId,
                         req.stackType,
-                      )
+                      );
+                    }}
+                    disabled={isAccepting}
+                    className={
+                      `px-4 py-1.5 text-sm rounded-lg transition ` +
+                      (isAccepting
+                        ? "bg-neutral-700 text-neutral-400 border border-neutral-700 cursor-not-allowed"
+                        : "bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20")
                     }
-                    className="px-4 py-1.5 text-sm rounded-lg bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 transition"
                   >
-                    Accept
+                    {isAccepting
+                      ? "Accepting..."
+                      : "Accept"}
                   </button>
                 </div>
               ))}
@@ -329,8 +383,10 @@ const [CurrentStackModel,setCurrentStackModel]=useState<GeneralStackType>();
               stacks.map((item) => {
                 return (
                   <div
-                  key={item._id}
-                  onClick={()=>{handleStackClick(item)}}
+                    key={item._id}
+                    onClick={() => {
+                      handleStackClick(item);
+                    }}
                     className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2"
                   >
                     <h3 className="font-semibold text-blue-400">
@@ -355,11 +411,13 @@ const [CurrentStackModel,setCurrentStackModel]=useState<GeneralStackType>();
           onClose={() => setShowRequestStackModal(false)}
         />
       )}
-      {CurrentStackModel && <StackModalForProfile 
-      stack={CurrentStackModel}
-      onClose={()=>setShowStackModel(false)}
-      isOpen={ShowStackModel}
-      /> }
+      {CurrentStackModel && (
+        <StackModalForProfile
+          stack={CurrentStackModel}
+          onClose={() => setShowStackModel(false)}
+          isOpen={ShowStackModel}
+        />
+      )}
       <ProfileModal
         isOpen={profileModal}
         onClose={() => setProfileModal(false)}

@@ -75,9 +75,14 @@ async function getStack(View: string, userId: string) {
       case "all": {
         await user.populate([
           { path: "projects.created", model: Project },
-          { path: "ideas.created", model: Idea },
-          { path: "collaborated.stackId"},
+          { path: "ideas.created", model: Idea }
         ]);
+
+        const collab=user.collaborated;
+        console.log("the collab",collab);
+  
+       const collabo= await user.populate({path:"collaborated.stackId",modelPath:"user.collaborated.stackType"});
+        console.log("the collaborated after populating collab",collabo);
 
         const allItems = [
           ...(user.projects?.created || []),

@@ -48,6 +48,10 @@ await userData.populate([
     select: "name email profileImage _id",
   },
   {
+    path: "requests.to",
+    select: "name email profileImage _id",
+  },
+  {
     path: "requests.stackId",
     select: "title _id",
   },

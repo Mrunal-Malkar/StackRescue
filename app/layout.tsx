@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Provider from "@/components/sessionProvider";
 import CustomQueryProvider from "@/components/queryClientProvider";
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -35,6 +36,7 @@ export default function RootLayout({
       >
         <CustomQueryProvider>
         <Provider>
+          <ToastContainer/>
         {children}
         </Provider>
         </CustomQueryProvider>

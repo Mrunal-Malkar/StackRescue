@@ -10,8 +10,9 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authProvider);
     if (!session) {
       return NextResponse.json({
-        status: 401,
         message: "Unauthorized request!",
+      },{
+        status: 401
       });
     }
 
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
     if (!formData) {
       return NextResponse.json(
         { message: "Unable to parse form data" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -45,8 +46,9 @@ export async function POST(req: NextRequest) {
 
     if (!imageUrl) {
       return NextResponse.json({
-        status: 400,
         message: "unable to upload image",
+      },{
+        status: 400
       });
     }
 
@@ -62,14 +64,15 @@ export async function POST(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ status: 404, message: "User not found!" });
+      return NextResponse.json({ message: "User not found!" },{
+      status: 404});
     }
 
 
     return NextResponse.json({
-      status: 200,
       message: "Profile updated successfully!",
-    });
+    },{
+      status: 200});
   } catch (error: unknown) {
     return NextResponse.json({ status: 500, message: "Internal server error" });
   }

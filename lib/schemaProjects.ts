@@ -71,9 +71,15 @@ const ProjectStackSchema = new mongoose.Schema(
     },
     collaborators: [
       {
+        requestedBy:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
+        author:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    }
     ],
   },
   { timestamps: true },
