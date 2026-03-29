@@ -361,9 +361,9 @@ const Page = () => {
                 className={`${InView === view ? "text-blue-500" : "text-neutral-200"} hover:cursor-pointer`}
               >
                 {view === "Posted"
-                  ? "Projects Posted"
+                  ? "Stacks Posted"
                   : view === "Collaborated"
-                    ? "Projects Collaborated"
+                    ? "Stacks Collaborated"
                     : "All"}
               </button>
             ))}

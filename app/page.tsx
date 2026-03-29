@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { ButtonCustom } from "@/components/ui/button";
 import { Navbar } from "@/components/ui/Navbar";
 import { Globe, Handshake, LucideCircleArrowUp, User2 } from "lucide-react";
@@ -20,7 +20,7 @@ export default function Home() {
 }
 
 const HeroSection = () => {
-  const router=useRouter();
+  const router = useRouter();
   return (
     <div className="flex flex-col bg-yellow-80 justifiy-center gap-y-1 items-center text-white w-full">
       <Image
@@ -32,7 +32,8 @@ const HeroSection = () => {
       />
       <div className="w-full flex flex-col justify-center text-center items-center gap-y-3.5 md:gap-y-2.5">
         <h1 className="text-5xl font-semibold tracking-tight md:tracking-tighter">
-          Where <span className="text-blue-400">Half-Built</span> Projects Find Their Team.
+          Where <span className="text-blue-400">Half-Built</span> Projects Find
+          Their Team.
         </h1>
         <h2 className="text-xl">
           Explore abandoned ideas, join forces with builders, and finish what
@@ -162,22 +163,23 @@ const Explain = () => {
 };
 
 const Footer = () => {
-  const router=useRouter();
+  const router = useRouter();
   return (
     <footer className="w-full py-4 from-blue-500 to-blue-600 bg-linear-to-br">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <div className="w-full flex items-center justify-center">
+          <div className="w-full my-6 flex flex-col items-center justify-center">
             <Image
-      onClick={()=>router.push("/")}
+              onClick={() => router.push("/")}
               alt="halfstack logo"
               src="/StackRescue_trans_logo.png"
               className="self-center"
               height={80}
               width={210}
             />
+          <div className="w-4xl text-white h-0.5 rounded-2xl bg-gray-300 my-2"></div>
           </div>
-          <ul className="text-lg flex items-center justify-center flex-col gap-7 md:flex-row md:gap-12 transition-all duration-500 py-14 mb-10 border-b border-gray-200">
+          {/* <ul className="text-lg flex items-center justify-center flex-col gap-7 md:flex-row md:gap-12 transition-all duration-500 py-14 mb-10 border-b border-gray-200">
             <li>
               <a href="#" className="text-white/70 hover:text-gray-900">
                 Pagedone
@@ -203,10 +205,10 @@ const Footer = () => {
                 Support
               </a>
             </li>
-          </ul>
+          </ul> */}
           <div className="flex space-x-10 justify-center items-center mb-14">
             <a
-              href="#"
+              href="https://x.com/Mrunal_Malkar"
               className="block  text-white transition-all duration-500 hover:text-indigo-600 "
             >
               <svg
@@ -221,7 +223,10 @@ const Footer = () => {
                 />
               </svg>
             </a>
-            <a className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer">
+            <a
+              href="https://github.com/Mrunal-Malkar/StackRescue"
+              className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -238,7 +243,10 @@ const Footer = () => {
                 <path d="M9 18c-4.51 2-5-2-7-2" />
               </svg>
             </a>
-            <a className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer">
+            <a
+              href="https://www.linkedin.com/in/mrunal-malkar/"
+              className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

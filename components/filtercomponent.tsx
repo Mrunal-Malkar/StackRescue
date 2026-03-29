@@ -52,7 +52,7 @@ const FilterComponent = () => {
             className="text-gray-200"
           />
           <h3 className="text-gray-200  text-xl sm:inline-block hidden">
-            2Filter
+            Filter
           </h3>
         </div>
         <div className="hidden justify-center items-center text-gray-300 bg-linear-to-tl gap-x-0.5 cursor-pointer from-gray-700 to-gray-900 rounded-xl p-1 px-2 sm:flex">

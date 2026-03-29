@@ -16,6 +16,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
 
 interface SidebarProps {
   className?: string;
@@ -46,6 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         className,
       )}
     >
+      <ToastContainer/>
       {/* Header */}
       <div className="relative border-b border-b-gray-700 px-4 py-3">
         <div className="flex items-center space-x-3">
@@ -135,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         {isLoggedIn && (
           <div className="px-2 pb-2">
             <button
-              onClick={() => redirect("/settings")}
+              onClick={() => toast.info("Settings page coming soon!")}
               className={cn(
                 "group flex items-center w-full rounded px-4 py-2 text-sm transition text-gray-400 hover:bg-gray-800 hover:text-gray-300",
                 isCollapsed && "justify-center",

@@ -147,7 +147,7 @@ const ExploreFooter = () => {
     <footer className="w-full py-4 from-gray-700 to-blue-800 mt-6 bg-linear-to-t pb-12 rounded-2xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <div className="w-full flex items-center justify-center">
+          <div className="w-full flex-col my-6 flex items-center justify-center">
             <Image
       onClick={()=>router.push("/")}
               alt="halfstack logo"
@@ -156,8 +156,10 @@ const ExploreFooter = () => {
               height={80}
               width={210}
             />
+            
+          <div className="w-4xl text-white h-0.5 rounded-2xl bg-gray-300 my-2"></div>
           </div>
-          <ul className="text-lg flex items-center justify-center flex-col gap-7 md:flex-row md:gap-12 transition-all duration-500 py-14 mb-10 border-b border-gray-200">
+          {/* <ul className="text-lg flex items-center justify-center flex-col gap-7 md:flex-row md:gap-12 transition-all duration-500 py-14 mb-10 border-b border-gray-200">
             <li>
               <a href="#" className="text-white/70 hover:text-gray-900">
                 Pagedone
@@ -183,10 +185,10 @@ const ExploreFooter = () => {
                 Support
               </a>
             </li>
-          </ul>
+          </ul> */}
           <div className="flex space-x-10 justify-center items-center mb-14">
             <a
-              href="#"
+              href="https://x.com/Mrunal_Malkar"
               className="block  text-white transition-all duration-500 hover:text-indigo-600 "
             >
               <svg
@@ -201,7 +203,7 @@ const ExploreFooter = () => {
                 />
               </svg>
             </a>
-            <a className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer">
+            <a href="https://github.com/Mrunal-Malkar/StackRescue" className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -218,7 +220,7 @@ const ExploreFooter = () => {
                 <path d="M9 18c-4.51 2-5-2-7-2" />
               </svg>
             </a>
-            <a className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer">
+            <a href="https://www.linkedin.com/in/mrunal-malkar/" className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
