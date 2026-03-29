@@ -1,7 +1,7 @@
+"use client"
 import { AuthorType, GeneralStackType } from "@/type/types";
 import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
-import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

@@ -4,7 +4,7 @@ import User from "@/lib/schemaUser";
 import Project from "@/lib/schemaProjects";
 import Idea from "@/lib/schemaIdeas";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -63,9 +63,6 @@ await userData.populate([
       userData.projects.created.length + userData.ideas.created.length;
     const profileImage=userData.profileImage;
     const requests=userData.requests;
-
-    console.log("the totoal stacks",userData.projects,userData.ideas.created)
-    console.log("the collaborations are",userData.collaborated.map((collab: collaborationType) => collab.stackId));
 
    type collaborationType={
     requestedBy:string,

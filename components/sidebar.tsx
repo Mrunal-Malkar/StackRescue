@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           <Image
             className="hover:cursor-pointer"
             onClick={() => redirect("/")}
-            src="/logo-transparent.png"
+            src="/StackRescue_trans_white_logo.png"
             alt="halfstack logo"
             height={230}
             width={170}
@@ -167,7 +167,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               isCollapsed && "hidden opacity-0",
             )}
           >
-            © 2026 HalfStack
+            © 2026 StackRescue
           </span>
         </div>
       </div>

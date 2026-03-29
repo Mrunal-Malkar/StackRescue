@@ -1,5 +1,5 @@
 "use client";
-import { GeneralStackType, StackCardType } from "@/type/types";
+import { GeneralStackType } from "@/type/types";
 import React, { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -13,16 +13,22 @@ export const ExploreStack = () => {
   const [currentStack, setCurrentStack] = useState<GeneralStackType>();
   const [ShowStackModal, setShowStackModal] = useState<boolean>(false);
   const router = useRouter();
-  const { data:stacks, error, isLoading } = useQuery<GeneralStackType[]>({
+  const {
+    data: stacks,
+    error,
+    isLoading,
+  } = useQuery<GeneralStackType[]>({
     queryKey: ["stack-card"],
     queryFn: async () => {
       const res = await fetch("api/get/stacks", { method: "GET" });
       const resJson = await res.json();
       if (!res.ok || !resJson) {
         toast.error("unable to fetch stacks");
-        throw new Error(resJson.message?resJson.message:"Unable to fetch stacks.");
+        throw new Error(
+          resJson.message ? resJson.message : "Unable to fetch stacks.",
+        );
       }
-      const stacks:GeneralStackType[] = resJson.stacks;
+      const stacks: GeneralStackType[] = resJson.stacks;
       return stacks;
     },
   });
@@ -32,7 +38,6 @@ export const ExploreStack = () => {
     setCurrentStack(stack);
     setShowStackModal(true);
   }
-                        
 
   if (session.status == "loading" || isLoading) {
     return (
@@ -44,9 +49,9 @@ export const ExploreStack = () => {
 
   if (session.status == "unauthenticated" || error) {
     if (session.status == "unauthenticated") {
-     toast.info("login to see full stack details");
+      toast.info("login to see full stack details");
     } else if (error) {
-     toast.error("error in getting stacks.");
+      toast.error("error in getting stacks.");
     }
   }
 
@@ -66,7 +71,9 @@ export const ExploreStack = () => {
   if (error) {
     return (
       <div className="h-full w-full flex juistify-center items-center">
-        <p className="text-center flex justify-center items-center w-full h-full text-red-700">{error && error.message? error.message :" Some error, occured."}</p>
+        <p className="text-center flex justify-center items-center w-full h-full text-red-700">
+          {error && error.message ? error.message : " Some error, occured."}
+        </p>
       </div>
     );
   }
@@ -74,10 +81,10 @@ export const ExploreStack = () => {
   return (
     <div className="w-full h-full overflow-y-auto text-black p-2 sm:p-6 justify-around gap-6 gap-y-16  flex flex-wrap">
       {/* stack cards */}
-      <ToastContainer/>
       {stacks &&
         stacks.map((item, i) => {
-            return (<div
+          return (
+            <div
               key={i}
               onClick={() => showStack(item)}
               className="group flex flex-col justify-between p-4 md:w-1/2 h-1/3 bg-neutral-900 hover:bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all duration-200 cursor-pointer"
@@ -95,25 +102,31 @@ export const ExploreStack = () => {
               </div>
 
               {/* Attributes */}
-              {item.categories.map((attribute,i)=>{
-                return (<div key={i} className="flex flex-wrap gap-2 mt-4">
-                <div className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700">
-                  {" "}
-                  <span className="text-neutral-400">category</span>
-                  <span className="text-neutral-200">{attribute}</span>
-                </div>
-              </div>)})}
+              {item.categories.map((attribute, i) => {
+                return (
+                  <div key={i} className="flex flex-wrap gap-2 mt-4">
+                    <div className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700">
+                      {" "}
+                      <span className="text-neutral-400">category</span>
+                      <span className="text-neutral-200">{attribute}</span>
+                    </div>
+                  </div>
+                );
+              })}
 
               {/* Footer */}
-              <div 
-              onClick={() => showStack(item)} className="flex justify-between items-center mt-4 pt-3 border-t border-neutral-800 text-xs text-neutral-500 group-hover:text-neutral-300 transition">
+              <div
+                onClick={() => showStack(item)}
+                className="flex justify-between items-center mt-4 pt-3 border-t border-neutral-800 text-xs text-neutral-500 group-hover:text-neutral-300 transition"
+              >
                 <span>View stack</span>
                 <span className="group-hover:translate-x-1 transition-transform">
                   →
                 </span>
               </div>
-            </div>)
-})}
+            </div>
+          );
+        })}
 
       {/* stack modal */}
       <StackModal
@@ -129,14 +142,16 @@ export const ExploreStack = () => {
 };
 
 const ExploreFooter = () => {
+  const router=useRouter();
   return (
     <footer className="w-full py-4 from-gray-700 to-blue-800 mt-6 bg-linear-to-t pb-12 rounded-2xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="w-full flex items-center justify-center">
             <Image
+      onClick={()=>router.push("/")}
               alt="halfstack logo"
-              src="/logo-transparent.png"
+              src="/StackRescue_trans_logo.png"
               className="self-center"
               height={80}
               width={210}
@@ -223,10 +238,11 @@ const ExploreFooter = () => {
             </a>
           </div>
           <span className="text-lg text-blue-100 text-center block">
-            ©<a href="">HalfStack</a> 2026, All rights reserved.
+            ©<a href="">StackRescue</a> 2026, All rights reserved.
           </span>
         </div>
       </div>
+      <ToastContainer />
     </footer>
   );
 };

@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-      console.log("The api hitted");
       const session = await getServerSession(authProvider);
       if (!session) {
           return NextResponse.json(
@@ -19,8 +18,6 @@ export async function POST(req: NextRequest) {
         
         const body: RequestStackType = await req.json();
 
-        console.log("the body",body);
-
         if (!body) {
             return NextResponse.json(
                 { message: "Data is required" },
@@ -29,7 +26,6 @@ export async function POST(req: NextRequest) {
     }
 
     const { stackType, stackId } = body;
-    console.log("the stackType",stackType,"the stackId",stackId);
     if (!stackType || !stackId) {
         return NextResponse.json(
             { message: "stackType and stackId are required" },
@@ -40,7 +36,6 @@ export async function POST(req: NextRequest) {
     let stack;
     
     await connectDB();
-    // 🔥 Dynamic Model Selection
     if (stackType === "Project") {
       stack = await Project.findById(stackId);
     } else if (stackType === "Idea") {

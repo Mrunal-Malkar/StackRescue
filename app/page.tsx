@@ -1,7 +1,9 @@
+"use client"
 import { ButtonCustom } from "@/components/ui/button";
 import { Navbar } from "@/components/ui/Navbar";
 import { Globe, Handshake, LucideCircleArrowUp, User2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   return (
@@ -18,18 +20,19 @@ export default function Home() {
 }
 
 const HeroSection = () => {
+  const router=useRouter();
   return (
-    <div className="flex flex-col bg-yellow-80 justifiy-center items-center text-white w-full">
+    <div className="flex flex-col bg-yellow-80 justifiy-center gap-y-1 items-center text-white w-full">
       <Image
-        className="pt-20 pb-6 sm:pt-40 sm:pb-4"
-        alt="HalfStack logo"
-        src="/logo-transparent.png"
+        className="pt-20 pb-6 sm:pt-40 sm:pb-4 scale-110"
+        alt="StackRescue logo"
+        src="/StackRescue_trans_logo.png"
         width={334}
         height={158}
       />
-      <div className="w-full flex flex-col justify-center text-center items-center gap-y-2.5">
-        <h1 className="text-5xl font-semibold tracking-tighter">
-          Where Half-Built Projects Find Their Team.
+      <div className="w-full flex flex-col justify-center text-center items-center gap-y-3.5 md:gap-y-2.5">
+        <h1 className="text-5xl font-semibold tracking-tight md:tracking-tighter">
+          Where <span className="text-blue-400">Half-Built</span> Projects Find Their Team.
         </h1>
         <h2 className="text-xl">
           Explore abandoned ideas, join forces with builders, and finish what
@@ -61,14 +64,14 @@ const WhatIs = () => {
       <div className="text-3xl sm:text-4xl m-4">
         What Is{" "}
         <span className="text-blue-500 font-semibold text-4xl sm:text-5xl tracking-tight underline decoration-blue-400 decoration-12">
-          HalfStack
+          StackRescue
         </span>{" "}
         For?
       </div>
       <br />
       <div className="text-xl max-w-2xl m-2">
         <p className="max-w-2xl text-gray-400">
-          {`HalfStack is basically where your "abandoned" projects go to finally
+          {`StackRescue is basically where your "abandoned" projects go to finally
   get finished. We’ve all been there—you start a killer SaaS idea, get
   the auth working, and then... life happens. Or maybe you just
   realize you're a backend wizard who really needs a frontend
@@ -126,11 +129,11 @@ const Explain = () => {
             Quick start
           </h2>
           <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl lg:text-balance">
-            Everything you need to know to get-started with HalfStack
+            Everything you need to know to get-started with StackRescue
           </p>
           <p className="mt-6 text-lg/8 text-gray-300">
-            Stack is a generic term in HalfStack which is used to describe any
-            project/idea on HalfStack.
+            Stack is a generic term in StackRescue which is used to describe any
+            project/idea on StackRescue.
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
@@ -159,14 +162,16 @@ const Explain = () => {
 };
 
 const Footer = () => {
+  const router=useRouter();
   return (
     <footer className="w-full py-4 from-blue-500 to-blue-600 bg-linear-to-br">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="w-full flex items-center justify-center">
             <Image
+      onClick={()=>router.push("/")}
               alt="halfstack logo"
-              src="/logo-transparent.png"
+              src="/StackRescue_trans_logo.png"
               className="self-center"
               height={80}
               width={210}
@@ -253,7 +258,7 @@ const Footer = () => {
             </a>
           </div>
           <span className="text-lg text-blue-100 text-center block">
-            ©<a href="">HalfStack</a> 2026, All rights reserved.
+            ©<a href="">StackRescue</a> 2026, All rights reserved.
           </span>
         </div>
       </div>

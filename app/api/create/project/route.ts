@@ -120,7 +120,6 @@ export async function POST(req: NextRequest) {
       createdBy: userId,
       collaborators:[]
     });
-    console.log("project",project);
 
     await User.findByIdAndUpdate(userId, {
       $push: { "projects.created": project._id },

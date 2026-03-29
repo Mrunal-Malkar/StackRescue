@@ -3,7 +3,7 @@ import connectDB from "@/lib/connectDB";
 import Idea from "@/lib/schemaIdeas";
 import Project from "@/lib/schemaProjects";
 import User from "@/lib/schemaUser";
-import { UnifiedStack } from "@/type/types";
+import { CollaborateType, UnifiedStack } from "@/type/types";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -73,7 +73,7 @@ async function getStack(view: string, userId: string) {
       const map = new Map<string, UnifiedStack>();
 
       const results = await Promise.all(
-        (user.collaborated || []).map(async (c) => {
+        (user.collaborated || []).map(async (c:CollaborateType) => {
           let doc = null;
 
           if (c.stackType === "Project") {
@@ -83,7 +83,7 @@ async function getStack(view: string, userId: string) {
           }
 
           if (doc) {
-            map.set(doc._id.toString(), doc); // dedupe
+            map.set(doc._id.toString(), doc);
           }
         })
       );
@@ -107,7 +107,11 @@ async function getStack(view: string, userId: string) {
           ...collaborated,
         ];
 
-        const sorted = allItems.sort(
+        const s=new Map();
+        allItems.forEach(item=>s.set(item._id.toString(),item));
+        const mapped=Array.from(s.values());
+
+        const sorted = mapped.sort(
           (a, b) =>
             new Date(b.createdAt).getTime() -
             new Date(a.createdAt).getTime()
@@ -157,7 +161,6 @@ async function getStack(view: string, userId: string) {
     }
 
   } catch (error) {
-    console.log("error in fetching userstack", error);
     return {
       success: false,
       error: "Failed to fetch stacks",

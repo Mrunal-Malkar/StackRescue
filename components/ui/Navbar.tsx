@@ -32,9 +32,9 @@ export const Navbar = () => {
       >
         {/* Logo */}
        <Image
-       className="items-center gap-2"
+       className="items-center gap-1 scale-110"
        alt="halfstack logo"
-       src="/logo-transparent.png"
+       src="/StackRescue_trans_white_logo.png"
        height={70}
        width={150}
        />

@@ -98,7 +98,6 @@ export async function POST(req: NextRequest) {
       { status: 200 },
     );
   } catch (error: unknown) {
-    console.log("error",error)
     return NextResponse.json(
       {
         message: "Some error occurred",

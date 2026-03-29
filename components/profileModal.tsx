@@ -36,7 +36,6 @@ export default function ProfileModal({
 
   async function AddProfileInfo(Data: ProfileFormInputs) {
     try {
-      console.log("SUBMIT CALLED"); // 🔍 debug
 
       const tools = Data.tools.map((t) => t.trim());
 
@@ -52,8 +51,6 @@ export default function ProfileModal({
       });
 
       const res = await request.json();
-
-      console.log("RESPONSE:", res); // 🔍 debug
 
       if (!request.ok) {
         toast.error(res.message || "Error creating profile");

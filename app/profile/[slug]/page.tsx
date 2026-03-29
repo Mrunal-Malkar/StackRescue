@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Sidebar from "../../../components/sidebar";
 import {
-  BaseStack,
   GeneralStackType,
   InViewType,
   RequestStackType,
@@ -39,7 +38,7 @@ const Page = () => {
   const [CurrentStackModel, setCurrentStackModel] =
     useState<GeneralStackType>();
   const [InView, setInView] = useState<InViewType>("All");
-const [isAccepting, setIsAccepting] = useState(false);
+  const [isAccepting, setIsAccepting] = useState(false);
   const router = useRouter();
 
   const { data, error, isLoading } = useQuery({
@@ -143,53 +142,52 @@ const [isAccepting, setIsAccepting] = useState(false);
     );
   }
 
-
-async function handleAcceptRequest(
-  requestedBy: string,
-  stackId: string,
-  stackType: string,
-) {
-  if (!session?.user?.id) {
-    toast.error("You must be signed in to accept requests.");
-    return;
-  }
-
-  if (isAccepting) return;
-
-  setIsAccepting(true);
-
-  try {
-    const res = await fetch("/api/req/acceptRequest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        requestedBy,
-        to: session.user.id,
-        stackId,
-        stackType,
-      }),
-    });
-
-    const resJson = await res.json();
-
-    if (!res.ok) {
-      throw new Error(resJson.message || "Unable to accept request.");
+  async function handleAcceptRequest(
+    requestedBy: string,
+    stackId: string,
+    stackType: string,
+  ) {
+    if (!session?.user?.id) {
+      toast.error("You must be signed in to accept requests.");
+      return;
     }
 
-    toast.success(resJson.message || "Request accepted successfully!");
-    window.location.reload(); // ✅ added
-  } catch (error) {
-    toast.error(
-      error instanceof Error
-        ? error.message
-        : "Failed to accept the request."
-    );
-  } finally {
-    setIsAccepting(false);
+    if (isAccepting) return;
+
+    setIsAccepting(true);
+
+    try {
+      const res = await fetch("/api/req/acceptRequest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requestedBy,
+          to: session.user.id,
+          stackId,
+          stackType,
+        }),
+      });
+
+      const resJson = await res.json();
+
+      if (!res.ok) {
+        throw new Error(resJson.message || "Unable to accept request.");
+      }
+
+      toast.success(resJson.message || "Request accepted successfully!");
+      window.location.reload(); // ✅ added
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to accept the request.",
+      );
+    } finally {
+      setIsAccepting(false);
+    }
   }
-}
 
   function handleRequestClick(stackId: string, stackType: string) {
     setShowRequestStackModal(true);
@@ -347,9 +345,7 @@ async function handleAcceptRequest(
                         : "bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20")
                     }
                   >
-                    {isAccepting
-                      ? "Accepting..."
-                      : "Accept"}
+                    {isAccepting ? "Accepting..." : "Accept"}
                   </button>
                 </div>
               ))}
