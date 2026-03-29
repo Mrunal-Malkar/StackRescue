@@ -387,7 +387,7 @@ async function handleAcceptRequest(
                     onClick={() => {
                       handleStackClick(item);
                     }}
-                    className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col gap-2"
+                    className="bg-neutral-900 border hover:cursor-pointer border-neutral-800 rounded-xl p-4 flex flex-col gap-2"
                   >
                     <h3 className="font-semibold text-blue-400">
                       {item.title}

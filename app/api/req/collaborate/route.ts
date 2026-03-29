@@ -72,22 +72,6 @@ const updated = await User.findOneAndUpdate(
   );
 }
 
-    // const author = await User.findByIdAndUpdate(
-    //   authorId,
-    //   {
-    //     $push: {
-    //       requests: {
-    //         requestedBy: userId,
-    //         to: authorId,
-    //         stackId,
-    //         stackType,
-    //         status: "pending",
-    //       },
-    //     },
-    //   },
-    //   { new: true }
-    // );
-
     return NextResponse.json(
       { message: "Request sent successfully" },
       { status: 200 }

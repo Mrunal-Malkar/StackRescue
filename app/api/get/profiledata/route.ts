@@ -62,7 +62,17 @@ await userData.populate([
     const created =
       userData.projects.created.length + userData.ideas.created.length;
     const profileImage=userData.profileImage;
-    const requests=userData.requests
+    const requests=userData.requests;
+
+    console.log("the totoal stacks",userData.projects,userData.ideas.created)
+    console.log("the collaborations are",userData.collaborated.map((collab: collaborationType) => collab.stackId));
+
+   type collaborationType={
+    requestedBy:string,
+    stackId:string,
+    stackType:string,
+    _id:string,
+   }
 
     const profileData = {
       about: userData.about,
@@ -73,7 +83,7 @@ await userData.populate([
       projects: userData.projects,
       ideas: userData.ideas,
       profileImage,
-      collaborated:userData.collaborated,
+      collaborated:userData.collaborated.map((collab: collaborationType) => collab.stackId),
       requests,
     };
     

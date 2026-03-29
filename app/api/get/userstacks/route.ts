@@ -1,11 +1,9 @@
 import { authProvider } from "@/lib/auth";
 import connectDB from "@/lib/connectDB";
 import Idea from "@/lib/schemaIdeas";
-import "@/lib/schemaProjects";
 import Project from "@/lib/schemaProjects";
-import "@/lib/schemaUser";
 import User from "@/lib/schemaUser";
-import { requestType, UnifiedStack } from "@/type/types";
+import { UnifiedStack } from "@/type/types";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -20,7 +18,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const id = session.user.id;
+    const userId = session.user.id;
     const { currentView } = await req.json();
 
     if (!currentView) {
@@ -30,7 +28,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = await getStack(currentView, id);
+    const result = await getStack(currentView, userId);
 
     if (!result.success) {
       return NextResponse.json(
@@ -49,9 +47,8 @@ export async function POST(req: NextRequest) {
   }
 }
 
-
-async function getStack(View: string, userId: string) {
-  if (!View || !userId) {
+async function getStack(view: string, userId: string) {
+  if (!view || !userId) {
     return {
       success: false,
       error: "Missing required parameters",
@@ -72,21 +69,43 @@ async function getStack(View: string, userId: string) {
       };
     }
 
-    switch (View.toLowerCase()) {
+    // ✅ Helper: fetch collaborated safely (NO populate)
+    const getCollaboratedStacks = async (): Promise<UnifiedStack[]> => {
+      const map = new Map<string, UnifiedStack>();
+
+      const results = await Promise.all(
+        (user.collaborated || []).map(async (c) => {
+          let doc = null;
+
+          if (c.stackType === "Project") {
+            doc = await Project.findById(c.stackId);
+          } else if (c.stackType === "Idea") {
+            doc = await Idea.findById(c.stackId);
+          }
+
+          if (doc) {
+            map.set(doc._id.toString(), doc); // dedupe
+          }
+        })
+      );
+
+      return Array.from(map.values());
+    };
+
+    switch (view.toLowerCase()) {
 
       case "all": {
         await user.populate([
-          { path: "projects.created", model: Project },
-          { path: "ideas.created", model: Idea },
-          {path:"collaborated.stackId"}
+          { path: "projects.created" },
+          { path: "ideas.created" },
         ]);
 
-        console.log("the user collaborated key",user.collaborated);
+        const collaborated = await getCollaboratedStacks();
 
-        const allItems = [
+        const allItems: UnifiedStack[] = [
           ...(user.projects?.created || []),
           ...(user.ideas?.created || []),
-          ...(user.collaborated?.map((c:requestType) => c.stackId) || []),
+          ...collaborated,
         ];
 
         const sorted = allItems.sort(
@@ -95,21 +114,14 @@ async function getStack(View: string, userId: string) {
             new Date(a.createdAt).getTime()
         );
 
-        console.log("sorted array",sorted);
-
         return { success: true, data: sorted };
       }
 
       case "collaborated": {
-        await user.populate([
-          { path: "collaborated.stackId" }
-        ]);
+        const collaborated = await getCollaboratedStacks();
 
-        const collaboratedItems =
-          user.collaborated?.map((c:{requestedBy:string,stackId:UnifiedStack,stackType:"Project"|"Idea"}) => c.stackId) || [];
-
-        const sorted = collaboratedItems.sort(
-          (a:UnifiedStack,b:UnifiedStack) =>
+        const sorted = collaborated.sort(
+          (a, b) =>
             new Date(b.createdAt).getTime() -
             new Date(a.createdAt).getTime()
         );
@@ -119,11 +131,11 @@ async function getStack(View: string, userId: string) {
 
       case "posted": {
         await user.populate([
-          { path: "projects.created", model: Project },
-          { path: "ideas.created", model: Idea },
+          { path: "projects.created" },
+          { path: "ideas.created" },
         ]);
 
-        const postedItems = [
+        const postedItems: UnifiedStack[] = [
           ...(user.projects?.created || []),
           ...(user.ideas?.created || []),
         ];
@@ -140,13 +152,13 @@ async function getStack(View: string, userId: string) {
       default:
         return {
           success: false,
-          error: `Invalid view type: ${View}`,
+          error: `Invalid view type: ${view}`,
           status: 400,
         };
     }
 
   } catch (error) {
-    console.log("error in fetching userstack",error);
+    console.log("error in fetching userstack", error);
     return {
       success: false,
       error: "Failed to fetch stacks",
