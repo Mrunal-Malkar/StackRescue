@@ -48,7 +48,7 @@ const HeroSection = () => {
           Explore
         </ButtonCustom>
         <ButtonCustom
-          link="#"
+          link="create/project"
           className="cursor-pointer hover:from-blue-400 p-4 hover:scale-105 hover:to-blue-600 hover:bg-linear-to-br rounded-2xl bg-white text-black"
         >
           Create a Stack

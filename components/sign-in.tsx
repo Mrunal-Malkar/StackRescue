@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { Chrome, Undo2 } from "lucide-react";
+import { Undo2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
@@ -78,7 +78,7 @@ export default function SignInPage() {
               letterSpacing: "-0.02em",
             }}
           >
-            DevCollab
+            StackRescue
           </h1>
           <p className="text-[12px] text-neutral-600 font-mono tracking-wide mt-1">
             build together · ship faster
@@ -133,7 +133,7 @@ export default function SignInPage() {
 
       {/* Bottom tag */}
       <p className="absolute bottom-8 text-[10px] text-neutral-800 font-mono tracking-widest uppercase z-10">
-        devcollab · 2025
+        StackRescue · 2026
       </p>
     </div>
   );
