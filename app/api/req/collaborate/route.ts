@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     //   );
     // }
 
-    if (!["Project", "Idea","project","idea"].includes(stackType)) {
+    if (!["Project", "Idea"].includes(stackType)) {
       return NextResponse.json(
         { message: "Invalid stack type" },
         { status: 400 }
@@ -39,39 +39,54 @@ export async function POST(req: NextRequest) {
     }
 
     await connectDB();
-
-    const existing = await User.findOne({
-      _id: authorId,
-      requests: {
+const updated = await User.findOneAndUpdate(
+  {
+    _id: authorId,
+    requests: {
+      $not: {
         $elemMatch: {
           requestedBy: userId,
           stackId: stackId,
         },
       },
-    });
-
-    if (existing) {
-      return NextResponse.json(
-        { message: "Request already sent" },
-        { status: 409 }
-      );
-    }
-
-    const author = await User.findByIdAndUpdate(
-      authorId,
-      {
-        $push: {
-          requests: {
-            requestedBy: userId,
-            to: authorId,
-            stackId,
-            stackType,
-            status: "pending",
-          },
-        },
+    },
+  },
+  {
+    $push: {
+      requests: {
+        requestedBy: userId,
+        to: authorId,
+        stackId,
+        stackType,
+        status: "pending",
       },
-      { new: true }
-    );
+    },
+  },
+  { new: true }
+);
+
+   if (!updated) {
+  return NextResponse.json(
+    { message: "Request already sent" },
+    { status: 409 }
+  );
+}
+
+    // const author = await User.findByIdAndUpdate(
+    //   authorId,
+    //   {
+    //     $push: {
+    //       requests: {
+    //         requestedBy: userId,
+    //         to: authorId,
+    //         stackId,
+    //         stackType,
+    //         status: "pending",
+    //       },
+    //     },
+    //   },
+    //   { new: true }
+    // );
 
     return NextResponse.json(
       { message: "Request sent successfully" },

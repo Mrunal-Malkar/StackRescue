@@ -284,7 +284,7 @@ async function handleAcceptRequest(
           </div>
 
           {/* requests */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 overflow-y-auto">
             <h1 className="text-2xl font-semibold text-white">Requests</h1>
 
             {data.requests?.length < 1 && (

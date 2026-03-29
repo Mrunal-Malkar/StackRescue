@@ -75,7 +75,9 @@ const StackModal = ({
         } else {
           toast.success("sent request!");
         }
-        setCollaborating(false);
+        setTimeout(() => {
+          setCollaborating(false);
+        },2000) 
       }
     } catch (e) {
       toast.error("some error occured");

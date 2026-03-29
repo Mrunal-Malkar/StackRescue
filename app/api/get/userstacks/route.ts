@@ -1,9 +1,11 @@
 import { authProvider } from "@/lib/auth";
 import connectDB from "@/lib/connectDB";
 import Idea from "@/lib/schemaIdeas";
+import "@/lib/schemaProjects";
 import Project from "@/lib/schemaProjects";
+import "@/lib/schemaUser";
 import User from "@/lib/schemaUser";
-import { GeneralStackType, requestType, UnifiedStack } from "@/type/types";
+import { requestType, UnifiedStack } from "@/type/types";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -75,14 +77,11 @@ async function getStack(View: string, userId: string) {
       case "all": {
         await user.populate([
           { path: "projects.created", model: Project },
-          { path: "ideas.created", model: Idea }
+          { path: "ideas.created", model: Idea },
+          {path:"collaborated.stackId"}
         ]);
 
-        const collab=user.collaborated;
-        console.log("the collab",collab);
-  
-       const collabo= await user.populate({path:"collaborated.stackId",modelPath:"user.collaborated.stackType"});
-        console.log("the collaborated after populating collab",collabo);
+        console.log("the user collaborated key",user.collaborated);
 
         const allItems = [
           ...(user.projects?.created || []),
@@ -107,7 +106,7 @@ async function getStack(View: string, userId: string) {
         ]);
 
         const collaboratedItems =
-          user.collaborated?.map((c:{requestedBy:string,stackId:UnifiedStack,stackType:"Project"|"Type"}) => c.stackId) || [];
+          user.collaborated?.map((c:{requestedBy:string,stackId:UnifiedStack,stackType:"Project"|"Idea"}) => c.stackId) || [];
 
         const sorted = collaboratedItems.sort(
           (a:UnifiedStack,b:UnifiedStack) =>
@@ -147,6 +146,7 @@ async function getStack(View: string, userId: string) {
     }
 
   } catch (error) {
+    console.log("error in fetching userstack",error);
     return {
       success: false,
       error: "Failed to fetch stacks",
