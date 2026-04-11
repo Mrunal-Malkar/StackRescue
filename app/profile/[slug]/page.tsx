@@ -27,6 +27,7 @@ import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import RequestStackModal from "@/components/requeststackmodal";
 import StackModalForProfile from "@/components/stackModalForProfile";
+import MessageModel from "@/components/messageModal";
 
 const Page = () => {
   const { data: session, status } = useSession();
@@ -39,6 +40,7 @@ const Page = () => {
     useState<GeneralStackType>();
   const [InView, setInView] = useState<InViewType>("All");
   const [isAccepting, setIsAccepting] = useState(false);
+  const [ShowMessageModel,setShowMessageModel]=useState(false);
   const router = useRouter();
 
   const { data, error, isLoading } = useQuery({
@@ -236,7 +238,7 @@ const Page = () => {
             <div className="flex gap-2">
               <button
                 onClick={() =>
-                  toast.info("this feature will be available soon.")
+                  setShowMessageModel(true)
                 }
                 className="flex-1 bg-blue-600 hover:bg-blue-500 text-sm py-2 rounded-lg transition"
               >
@@ -412,6 +414,12 @@ const Page = () => {
           stack={CurrentStackModel}
           onClose={() => setShowStackModel(false)}
           isOpen={ShowStackModel}
+        />
+      )}
+      {ShowMessageModel &&(
+        <MessageModel
+        onClose={()=>setShowMessageModel(false)}
+        isOpen={ShowMessageModel}
         />
       )}
       <ProfileModal
