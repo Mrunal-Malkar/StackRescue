@@ -108,6 +108,14 @@ const UserSchema = new mongoose.Schema(
         },
       },
     ],
+    chats:[{
+      receiver:{type:[mongoose.Schema.Types.ObjectId],ref:"User"},
+      chatId:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:"Chat",
+      }
+      }
+    ]
   },
   { timestamps: true }
 );

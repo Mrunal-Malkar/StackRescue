@@ -40,7 +40,7 @@ const Page = () => {
     useState<GeneralStackType>();
   const [InView, setInView] = useState<InViewType>("All");
   const [isAccepting, setIsAccepting] = useState(false);
-  const [ShowMessageModel,setShowMessageModel]=useState(false);
+  const [ShowMessageModel, setShowMessageModel] = useState(false);
   const router = useRouter();
 
   const { data, error, isLoading } = useQuery({
@@ -237,9 +237,7 @@ const Page = () => {
 
             <div className="flex gap-2">
               <button
-                onClick={() =>
-                  setShowMessageModel(true)
-                }
+                onClick={() => setShowMessageModel(true)}
                 className="flex-1 bg-blue-600 hover:bg-blue-500 text-sm py-2 rounded-lg transition"
               >
                 Message
@@ -416,10 +414,10 @@ const Page = () => {
           isOpen={ShowStackModel}
         />
       )}
-      {ShowMessageModel &&(
+      {ShowMessageModel && (
         <MessageModel
-        onClose={()=>setShowMessageModel(false)}
-        isOpen={ShowMessageModel}
+          onClose={() => setShowMessageModel(false)}
+          isOpen={ShowMessageModel}
         />
       )}
       <ProfileModal

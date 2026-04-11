@@ -65,6 +65,7 @@ export const authProvider: NextAuthOptions = {
           about: "",
           socialLink: "",
           toolsMostUsed: [],
+          chats:[],
         });
 
         return !!newUser;
