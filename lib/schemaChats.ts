@@ -7,4 +7,8 @@ const ChatSchema=new mongoose.Schema(
         imageUrl:{type:String,required:false},
         createdAt:{type:Date,default:Date.now}
     }]
-})
+});
+
+const Chat=mongoose.models.ChatSchema || mongoose.model("Chat",ChatSchema);
+
+export default Chat;
