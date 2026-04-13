@@ -7,6 +7,7 @@ import {
   InViewType,
   RequestStackType,
   requestType,
+  UserType,
 } from "../../../type/types";
 import { useSession } from "next-auth/react";
 import SignInPage from "@/components/sign-in";
@@ -28,6 +29,7 @@ import Image from "next/image";
 import RequestStackModal from "@/components/requeststackmodal";
 import StackModalForProfile from "@/components/stackModalForProfile";
 import MessageModel from "@/components/messageModal";
+import { fetchUsers } from "@/app/functions/FetchUsers";
 
 const Page = () => {
   const { data: session, status } = useSession();

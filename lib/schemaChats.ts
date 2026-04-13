@@ -5,5 +5,6 @@ const ChatSchema=new mongoose.Schema(
         sender:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
         message:{type:String,required:false},
         imageUrl:{type:String,required:false},
+        createdAt:{type:Date,default:Date.now}
     }]
 })

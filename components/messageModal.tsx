@@ -1,46 +1,78 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Send, Paperclip, ArrowLeft } from "lucide-react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { MessageType, UserType } from "@/type/types";
+import { fetchUsers } from "@/app/functions/FetchUsers";
+import { useSession } from "next-auth/react";
+import { fetchMessages } from "@/app/functions/FetchMessages";
+import Loader from "./ui/Loader";
 
 const MessageModel = ({
   onClose,
   isOpen,
+  standAloneUser,
 }: {
   onClose: () => void;
   isOpen: boolean;
+  standAloneUser?: UserType;
 }) => {
+  const { status, data } = useSession();
+
+  const {
+    data: users,
+    error: usersFetchingError,
+    isLoading: isLoadingUsersFetching,
+  } = useQuery<UserType[]>({
+    queryKey: ["messageuUsers"],
+    queryFn: fetchUsers,
+    enabled: status === "authenticated" && !!standAloneUser,
+    placeholderData: keepPreviousData || [
+      { text: "Hey there!", sender: "other" },
+      { text: "Hello 👋", sender: "me" },
+    ],
+  });
+
+  const {
+    data: userMessages,
+    error: messageFetchingError,
+    isLoading: isLoadingMessages,
+  } = useQuery({
+    queryKey: ["userMessages"],
+    queryFn: () => fetchMessages(standAloneUser?.receiver || data?.user.id),
+    enabled: status === "authenticated",
+  });
+
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([
-    { text: "Hey there!", sender: "other" },
-    { text: "Hello 👋", sender: "me" },
-  ]);
+  // const [messages, setMessages] = useState<MessageType>([
+  //   { text: "Hey there!", sender: "other" },
+  //   { text: "Hello 👋", sender: "me" },
+  // ]);
+  const [messages, setMessages] = useState<MessageType[]>([
+    {sender:"dflsidf",message:"Hey hello!!",createdAt:new Date()}
+  ]
+  );
 
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  useEffect(()=>{
+    if(userMessages && userMessages!=messages){
+      setMessages(userMessages)
+    }
+  },userMessages)
 
-  const users = [
-    {
-      id: 1,
-      name: "Alexander The Great",
-      img: "https://i.pravatar.cc/40?img=1",
-    },
-    { id: 2, name: "John Doe", img: "https://i.pravatar.cc/40?img=2" },
-    {
-      id: 3,
-      name: "A Very Long Username That Should Trim",
-      img: "https://i.pravatar.cc/40?img=3",
-    },
-  ];
-
-  const sendMessage = () => {
-    if (!message.trim()) return;
-    setMessages([...messages, { text: message, sender: "me" }]);
-    setMessage("");
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") sendMessage();
-  };
+  const [selectedUser, setSelectedUser] = useState<UserType | null>(
+    standAloneUser ? standAloneUser : null,
+  );
 
   if (!isOpen) return null;
+
+  function sendMessage() {
+    if (!message.trim()) return;
+    setMessages([...messages, { message: message, sender:"me",createdAt:new Date}]);
+    setMessage("");
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") sendMessage();
+  }
 
   return (
     <div
@@ -62,18 +94,20 @@ const MessageModel = ({
             Chats
           </h2>
 
-          {users.map((user) => (
+          {users?.map((user) => (
             <div
-              key={user.id}
+              key={user.receiver}
               onClick={() => setSelectedUser(user)}
               className="flex items-center gap-3 p-4 hover:bg-gray-800 cursor-pointer transition w-full"
             >
               <img
-                src={user.img}
+                src={user.receiverProfileImage}
                 className="w-10 h-10 rounded-full"
                 alt="profileImage"
               />
-              <p className="text-white text-sm truncate w-full">{user.name}</p>
+              <p className="text-white text-sm truncate w-full">
+                {user.receiverName}
+              </p>
             </div>
           ))}
         </div>
@@ -98,29 +132,35 @@ const MessageModel = ({
             {selectedUser && (
               <>
                 <img
-                  src={selectedUser.img}
+                  src={selectedUser.receiverProfileImage}
                   className="w-8 h-8 rounded-full"
                   alt=""
                 />
-                <span className="truncate">{selectedUser.name}</span>
+                <span className="truncate">{selectedUser.receiverName}</span>
               </>
             )}
           </div>
 
           {/* MESSAGES */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`max-w-[70%] px-4 py-2 rounded-xl text-sm ${
-                  msg.sender === "me"
-                    ? "ml-auto bg-blue-600 text-white"
-                    : "bg-gray-800 text-gray-200"
-                }`}
-              >
-                {msg.text}
+            {isLoadingMessages ? (
+              <div className="w-full h-full flex justify-center items-center">
+                <Loader />
               </div>
-            ))}
+            ) : (
+              messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`max-w-[70%] px-4 py-2 rounded-xl text-sm ${
+                    msg.sender === "me"
+                      ? "ml-auto bg-blue-600 text-white"
+                      : "bg-gray-800 text-gray-200"
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              ))
+            )}
           </div>
 
           {/* INPUT */}

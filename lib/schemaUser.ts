@@ -110,6 +110,8 @@ const UserSchema = new mongoose.Schema(
     ],
     chats:[{
       receiver:{type:[mongoose.Schema.Types.ObjectId],ref:"User"},
+      receiverName:String,
+      receiverProfileImage:String,
       chatId:{
         type:[mongoose.Schema.Types.ObjectId],
         ref:"Chat",

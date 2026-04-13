@@ -164,3 +164,17 @@ export type AuthorType={
 export type UnifiedStack = GeneralStackType & {
   stackType?: "Project" | "Idea";
 };
+
+export type UserType={
+      receiver:string,
+      receiverName:string,
+      receiverProfileImage:string,
+      chatId:string,
+      }
+
+export type MessageType={
+sender:string,
+message?:string,
+imageUrl?:string,
+createdAt:Date,
+}
