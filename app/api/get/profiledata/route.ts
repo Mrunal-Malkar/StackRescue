@@ -89,6 +89,10 @@ await userData.populate([
       { status: 200 }
     );
   } catch (e) {
-    return NextResponse.json({ message: e },{status:500});
+    console.log("the error:", e);
+    if (e instanceof Error) {
+      return NextResponse.json({ message: e.message }, { status: 500 });
+    }
+    return NextResponse.json({ message: e }, { status: 500 });
   }
 }

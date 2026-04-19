@@ -6,7 +6,7 @@ export default async function connectDB() {
       return {status:200,connected:true};
     }
     const connect = await mongoose.connect(
-      `mongodb+srv://mrunalpmalkar_db_user:${process.env.MONGODB_PASSWORD}@cluster0.1dlvqul.mongodb.net/StackRescue`,
+      `mongodb+srv://mrunalpmalkar_db_user:${process.env.MONGODB_PASSWORD}@cluster0.1dlvqul.mongodb.net/${process.env.DATABASE_NAME}`,
     );
     connect.connection.on("connected", () => {
       return { status: 200, connected: true };

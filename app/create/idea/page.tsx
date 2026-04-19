@@ -38,7 +38,6 @@ const Idea = () => {
   const session=useSession();
   const {
     register,
-    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<Input>();
@@ -57,7 +56,7 @@ const Idea = () => {
 };
 
 useEffect(() => {
-  if (session.status === "unauthenticated") {
+  if (session.status === "unauthenticated" && !toast.isActive) {
     toast.info("you cannot post stacks without signing up..");
   }
 }, [session.status]);
@@ -96,8 +95,8 @@ if (session.status === "loading") {
   }
 
   function handleAddRole(e: React.KeyboardEvent<HTMLInputElement>) {
+    e.preventDefault();
     if (e.key === "Enter") {
-      e.preventDefault();
 
       if (roleInput.trim() && !roles.includes(roleInput.trim())) {
         setRoles([...roles, roleInput.trim()]);
@@ -107,8 +106,8 @@ if (session.status === "loading") {
   }
 
   function handleAddCategory(e: React.KeyboardEvent<HTMLInputElement>) {
+    e.preventDefault();
     if (e.key === "Enter") {
-      e.preventDefault();
       if (categoryInput.trim() && !categories.includes(categoryInput.trim())) {
         setCategories([...categories, categoryInput.trim()]);
         setCategoryInput("");
@@ -117,8 +116,8 @@ if (session.status === "loading") {
   }
 
   function handleAddSkill(e: React.KeyboardEvent<HTMLInputElement>) {
+    e.preventDefault();
     if (e.key === "Enter") {
-      e.preventDefault();
       const newSkill = skillInput.trim();
       if (newSkill && !requiredSkills.includes(newSkill)) {
         setRequiredSkills([...requiredSkills, newSkill]);
@@ -129,7 +128,6 @@ if (session.status === "loading") {
 
   return (
     <div className="w-screen h-screen flex">
-      <ToastContainer />
       <Sidebar />
       <div className="w-full min-h-screen overflow-y-auto bg-[#020617] text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-200 font-sans antialiased">
         {/* AMBIENT BACKGROUND ELEMENTS */}

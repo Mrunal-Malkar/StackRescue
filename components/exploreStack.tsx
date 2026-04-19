@@ -87,7 +87,7 @@ export const ExploreStack = () => {
             <div
               key={i}
               onClick={() => showStack(item)}
-              className="group flex flex-col justify-between p-4 md:w-1/2 h-1/3 bg-neutral-900 hover:bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all duration-200 cursor-pointer"
+              className="group flex flex-col justify-between p-4 md:w-1/2 min-h-1/3 h-fit bg-neutral-900 hover:bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all duration-200 cursor-pointer"
             >
               {/* Title */}
               <div className="flex flex-col gap-2">
@@ -102,17 +102,17 @@ export const ExploreStack = () => {
               </div>
 
               {/* Attributes */}
+              <div className="flex flex-wrap gap-2 mt-4">
               {item.categories.map((attribute, i) => {
                 return (
-                  <div key={i} className="flex flex-wrap gap-2 mt-4">
-                    <div className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700">
+                    <div key={i} className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700">
                       {" "}
                       <span className="text-neutral-400">category</span>
                       <span className="text-neutral-200">{attribute}</span>
                     </div>
-                  </div>
                 );
               })}
+              </div>
 
               {/* Footer */}
               <div
