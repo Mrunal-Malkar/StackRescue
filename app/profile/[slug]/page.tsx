@@ -20,7 +20,7 @@ import {
   Undo2,
 } from "lucide-react";
 import ProfileModal from "@/components/profileModal";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import fetchStacks from "@/app/functions/FetchStacksProfile";
 import { fetchData } from "@/app/functions/FetchProfileData";
@@ -44,7 +44,8 @@ const Page = () => {
   const [isAccepting, setIsAccepting] = useState(false);
   const [ShowMessageModel, setShowMessageModel] = useState(false);
   const router = useRouter();
-
+  const {slug}=useParams();
+  const [StandAloneUser,setStandAloneUser]=useState<string | null>();
   const { data, error, isLoading } = useQuery({
     queryKey: ["profileData"],
     queryFn: fetchData,
@@ -64,7 +65,7 @@ const Page = () => {
     staleTime: 1000 * 60 * 2,
   });
 
-  if (status == "loading") {
+  if (status == "loading" || isLoading) {
     return (
       <div className="w-screen h-screen flex justify-center items-center">
         <Loader />
@@ -74,14 +75,6 @@ const Page = () => {
 
   if (status == "unauthenticated") {
     return <SignInPage />;
-  }
-
-  if (isLoading) {
-    return (
-      <div className="w-screen h-screen bg-gray-800 flex justify-center items-center">
-        <Loader />
-      </div>
-    );
   }
 
   if (error) {
@@ -420,6 +413,7 @@ const Page = () => {
         <MessageModel
           onClose={() => setShowMessageModel(false)}
           isOpen={ShowMessageModel}
+          standAloneUser={StandAloneUser || undefined}
         />
       )}
       <ProfileModal

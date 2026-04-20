@@ -31,7 +31,7 @@ const MessageModel = ({
   });
 
   const currentReceiverId =
-    selectedUser?.receiver || standAloneUser?.receiver || data?.user?.id;
+    selectedUser?.receiver || standAloneUser?.receiver || data?.user.id;
 
   const {
     data: userMessages,
