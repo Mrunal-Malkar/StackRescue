@@ -103,15 +103,18 @@ export const ExploreStack = () => {
 
               {/* Attributes */}
               <div className="flex flex-wrap gap-2 mt-4">
-              {item.categories.map((attribute, i) => {
-                return (
-                    <div key={i} className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700">
+                {item.categories.map((attribute, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700"
+                    >
                       {" "}
                       <span className="text-neutral-400">category</span>
                       <span className="text-neutral-200">{attribute}</span>
                     </div>
-                );
-              })}
+                  );
+                })}
               </div>
 
               {/* Footer */}
@@ -142,22 +145,22 @@ export const ExploreStack = () => {
 };
 
 const ExploreFooter = () => {
-  const router=useRouter();
+  const router = useRouter();
   return (
     <footer className="w-full py-4 from-gray-700 to-blue-800 mt-6 bg-linear-to-t pb-12 rounded-2xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="w-full flex-col my-6 flex items-center justify-center">
             <Image
-      onClick={()=>router.push("/")}
+              onClick={() => router.push("/")}
               alt="halfstack logo"
               src="/StackRescue_trans_logo.png"
               className="self-center"
               height={80}
               width={210}
             />
-            
-          <div className="w-4xl text-white h-0.5 rounded-2xl bg-gray-300 my-2"></div>
+
+            <div className="w-4xl text-white h-0.5 rounded-2xl bg-gray-300 my-2"></div>
           </div>
           {/* <ul className="text-lg flex items-center justify-center flex-col gap-7 md:flex-row md:gap-12 transition-all duration-500 py-14 mb-10 border-b border-gray-200">
             <li>
@@ -203,7 +206,10 @@ const ExploreFooter = () => {
                 />
               </svg>
             </a>
-            <a href="https://github.com/Mrunal-Malkar/StackRescue" className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer">
+            <a
+              href="https://github.com/Mrunal-Malkar/StackRescue"
+              className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -220,7 +226,10 @@ const ExploreFooter = () => {
                 <path d="M9 18c-4.51 2-5-2-7-2" />
               </svg>
             </a>
-            <a href="https://www.linkedin.com/in/mrunal-malkar/" className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer">
+            <a
+              href="https://www.linkedin.com/in/mrunal-malkar/"
+              className="block text-white transition-all duration-500 hover:text-indigo-600 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
