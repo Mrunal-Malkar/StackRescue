@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Send, Paperclip, ArrowLeft } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MessageType, UserType } from "@/type/types";
@@ -10,39 +10,66 @@ import Loader from "./ui/Loader";
 const MessageModel = ({
   onClose,
   isOpen,
-  standAloneUser,
+  standAloneUserEmail,
 }: {
   onClose: () => void;
   isOpen: boolean;
-  standAloneUser?: UserType;
+  standAloneUserEmail?: string;
 }) => {
   const { status, data } = useSession();
   const queryClient = useQueryClient();
 
+  const {
+    data: standAloneUser,
+    isLoading: isLoadingStandAloneUser,
+    error,
+  } = useQuery<UserType>({
+    queryKey: ["standAloneUser", standAloneUserEmail],
+    queryFn: async () => {
+      if (!standAloneUserEmail) return null;
+      const res = await fetch(
+        `/api/get/userbyemail?email=${standAloneUserEmail}`,
+        {
+          method: "GET",
+        },
+      );
+      const jsonData = await res.json();
+      return jsonData;
+    },
+  });
   const [message, setMessage] = useState("");
   const [selectedUser, setSelectedUser] = useState<UserType | null>(
-    standAloneUser || null
+    standAloneUser ?? null,
   );
 
   const { data: users, isLoading: isLoadingUsers } = useQuery<UserType[]>({
     queryKey: ["messageUsers"],
     queryFn: fetchUsers,
-    enabled: status === "authenticated",
+    enabled: status === "authenticated" && !standAloneUser,
   });
 
-  const currentReceiverId =
-    selectedUser?.receiver || standAloneUser?.receiver || data?.user.id;
-
-  const {
-    data: userMessages,
-    isLoading: isLoadingMessages,
-  } = useQuery<MessageType[]>({
-    queryKey: ["userMessages", currentReceiverId],
-    queryFn: () => fetchMessages(currentReceiverId),
-    enabled: status === "authenticated" && !!currentReceiverId,
+  const { data: userMessages, isLoading: isLoadingMessages } = useQuery<
+    MessageType[]
+  >({
+    queryKey: [
+      "userMessages",
+      selectedUser?.receiver || standAloneUser?.receiver,
+    ], //    .receiver has the id of that user
+    queryFn: async () => {
+      if (!selectedUser?.receiver || !standAloneUser) {
+        throw new Error("Invalid user selected");
+      } else {
+        const messages = await fetchMessages(
+          selectedUser?.receiver || standAloneUser?.receiver,
+        );
+        return messages as MessageType[];
+      }
+    },
+    enabled: status === "authenticated" && !!selectedUser,
   });
 
   const messages = userMessages ?? [];
+  console.log("the users",users)
 
   if (!isOpen) return null;
 
@@ -57,11 +84,12 @@ const MessageModel = ({
 
     // Optimistic UI update
     queryClient.setQueryData<MessageType[]>(
-      ["userMessages", currentReceiverId],
-      (old = []) => [...old, newMessage]
+      ["userMessages", selectedUser?.receiver || standAloneUser?.receiver],
+      (old = []) => [...old, newMessage],
     );
 
     setMessage("");
+
 
     // TODO: send to backend here
   }
@@ -81,7 +109,7 @@ const MessageModel = ({
       >
         {/* LEFT: USERS */}
         <div
-          className={`
+          className={`  
             ${selectedUser ? "hidden md:block" : "block"}
             w-full md:w-[25%] bg-[#121212] border-r border-gray-800 overflow-y-auto
           `}
@@ -92,6 +120,8 @@ const MessageModel = ({
 
           {isLoadingUsers ? (
             <div className="p-4 text-white">Loading...</div>
+          ) : (users?.length == 0 ? (
+            <div className="p-4 text-white">No Chats Found</div>
           ) : (
             users?.map((user) => (
               <div
@@ -109,7 +139,7 @@ const MessageModel = ({
                 </p>
               </div>
             ))
-          )}
+          ))}
         </div>
 
         {/* RIGHT: CHAT */}
@@ -135,15 +165,21 @@ const MessageModel = ({
                   className="w-8 h-8 rounded-full"
                   alt=""
                 />
-                <span className="truncate">
-                  {selectedUser.receiverName}
-                </span>
+                <span className="truncate">{selectedUser.receiverName}</span>
               </>
             )}
           </div>
 
           {/* MESSAGES */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            
+            {/* in case no users */}
+            {
+              users?.length==0 && (
+                <div className="text-wrap text-gray-200">Find people and chat with them, all your chats will appear here</div>
+              )
+            }
+            
             {isLoadingMessages ? (
               <div className="w-full h-full flex justify-center items-center">
                 <Loader />

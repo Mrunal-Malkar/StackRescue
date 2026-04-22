@@ -8,13 +8,16 @@ export async function fetchUsers():Promise<UserType[]>{
    
      const jsonData = await res.json();
    console.log("the res",jsonData)
+      if (res.status === 404) {
+       return []; // if no users found return an empty arry
+     }
      if (!res.ok ) {
        throw new Error(jsonData.message || "Failed to fetch stacks");
      }
      console.log("the res",jsonData);
-     return jsonData.data as UserType[];
+     return jsonData.data as UserType[]
   }catch(e){
     console.log("the error",e)
-  throw new Error("Failed to fetch users",e?e:undefined);
+  throw new Error("Failed to fetch users"+(e instanceof Error ? e : "unknown error"));
   }
 }

@@ -1,3 +1,4 @@
+import { replaceLast } from "@/app/functions/general";
 import { authProvider } from "@/lib/auth";
 import Chat from "@/lib/schemaChats";
 import User from "@/lib/schemaUser";
@@ -14,7 +15,15 @@ export async function GET(request: NextRequest, response: NextResponse) {
     }
 
     const { searchParams } = new URL(request.url);
-    const theId = searchParams.get("id");
+    const emailParam = searchParams.get("email");
+    const theId = searchParams.get("id")
+      ? searchParams.get("id")
+      : emailParam
+        ? await User.findOne({
+            email: replaceLast(emailParam, "%40", "@"),
+          }).select("_id")
+        : null;
+
     if (!theId) {
       return NextResponse.json(
         { error: "User ID is required" },
@@ -42,7 +51,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       },
     ]);
 
-    console.log("the messages at the backend",messages);
+    console.log("the messages at the backend", messages);
 
     if (!messages) {
       return NextResponse.json({ error: "No messages found" }, { status: 404 });

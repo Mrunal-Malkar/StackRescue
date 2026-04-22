@@ -15,10 +15,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const users = await User.findById({ userId }).select("chats");
-
+    const users = (await User.findById(userId).select("chats"))?.chats;
+    console.log('the users at the backed',users);
     if (users && users.length === 0) {
-      return NextResponse.json({ message: "No Users Found" }, { status: 404 });
+      return NextResponse.json({data:[]}, { status: 404 });
     } else if (!users) {
       return NextResponse.json(
         { message: "Error in getting users" },
@@ -26,10 +26,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
       );
     }
 
-    return NextResponse.json({ users }, { status: 200 });
+    return NextResponse.json({ data: users }, { status: 200 });
   } catch (e) {
     return NextResponse.json(
-      { message: "Error in getting users" },
+      { message: "Error in getting users",e },
       { status: 500 },
     );
   }

@@ -30,6 +30,7 @@ import RequestStackModal from "@/components/requeststackmodal";
 import StackModalForProfile from "@/components/stackModalForProfile";
 import MessageModel from "@/components/messageModal";
 import { fetchUsers } from "@/app/functions/FetchUsers";
+import { replaceLast } from "@/app/functions/general";
 
 const Page = () => {
   const { data: session, status } = useSession();
@@ -44,8 +45,9 @@ const Page = () => {
   const [isAccepting, setIsAccepting] = useState(false);
   const [ShowMessageModel, setShowMessageModel] = useState(false);
   const router = useRouter();
-  const {slug}=useParams();
-  const [StandAloneUser,setStandAloneUser]=useState<string | null>();
+  const {slug}=useParams() as {slug:string};
+  const profileEmail=replaceLast(slug,"%40","@");
+  const StandAloneUserEmail=((profileEmail==session?.user.email)?undefined:profileEmail);
   const { data, error, isLoading } = useQuery({
     queryKey: ["profileData"],
     queryFn: fetchData,
@@ -413,7 +415,7 @@ const Page = () => {
         <MessageModel
           onClose={() => setShowMessageModel(false)}
           isOpen={ShowMessageModel}
-          standAloneUser={StandAloneUser || undefined}
+          standAloneUserEmail={StandAloneUserEmail}
         />
       )}
       <ProfileModal

@@ -1,16 +1,12 @@
 import { MessageType } from "@/type/types";
 
-export const fetchMessages = async ({
-  standAloneUser,
-  userId,
-}: {
-  standAloneUser?: string;
-  userId?: string;
-}) => {
+export const fetchMessages = async (userId:string) => {
   try {
-    const id = standAloneUser ? standAloneUser : userId;
+    if(!userId){
+      return null;
+    }
     const response = await fetch(
-      `/api/messages?userId=${id}`,
+      `/api/messages?userId=${userId}`,
       {
         headers: {
           "Content-Type": "application/json",
