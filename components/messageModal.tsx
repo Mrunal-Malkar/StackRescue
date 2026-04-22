@@ -7,6 +7,8 @@ import { useSession } from "next-auth/react";
 import { fetchMessages } from "@/app/functions/FetchMessages";
 import Loader from "./ui/Loader";
 
+//standAloneuserEmail is the email of the user whose profile we are visiting, if its not our own profile, then we will show the message model with only that user in the left side and his messages in the right side, and if its our own profile then we will show all the users in the left side and their messages in the right side
+
 const MessageModel = ({
   onClose,
   isOpen,
@@ -18,34 +20,50 @@ const MessageModel = ({
 }) => {
   const { status, data } = useSession();
   const queryClient = useQueryClient();
-
+  const [message, setMessage] = useState("");
+  
   const {
     data: standAloneUser,
     isLoading: isLoadingStandAloneUser,
     error,
-  } = useQuery<UserType>({
+  } = useQuery<UserType | null>({
     queryKey: ["standAloneUser", standAloneUserEmail],
     queryFn: async () => {
-      if (!standAloneUserEmail) return null;
-      const res = await fetch(
-        `/api/get/userbyemail?email=${standAloneUserEmail}`,
-        {
-          method: "GET",
-        },
-      );
-      const jsonData = await res.json();
-      return jsonData;
+      try {
+        const res = await fetch(
+          `/api/get/standaloneUserByEmail?email=${standAloneUserEmail}`,
+          {
+            method: "GET",
+          },
+        );
+        if (res.status !== 200) {
+         throw new Error("Failed to fetch user, status code: " + res.status);
+        }
+        const jsonData = await res.json();
+        const data = {
+          receiver: jsonData.data._id,
+          receiverName: jsonData.data.name,
+          receiverProfileImage: jsonData.data.profileImage,
+        };
+        setSelectedUser(data);
+        return data as UserType;
+      } catch (e) {
+        throw new Error(
+          "Failed to fetch user" +
+            (e instanceof Error ? e.message : "error:" + e),
+        );
+      }
     },
+    enabled: status === "authenticated" && !!standAloneUserEmail,
   });
-  const [message, setMessage] = useState("");
-  const [selectedUser, setSelectedUser] = useState<UserType | null>(
-    standAloneUser ?? null,
-  );
+
+  
+  const [selectedUser, setSelectedUser] = useState<UserType | null>(standAloneUser??null);
 
   const { data: users, isLoading: isLoadingUsers } = useQuery<UserType[]>({
     queryKey: ["messageUsers"],
     queryFn: fetchUsers,
-    enabled: status === "authenticated" && !standAloneUser,
+    enabled: status === "authenticated" && !standAloneUserEmail,
   });
 
   const { data: userMessages, isLoading: isLoadingMessages } = useQuery<
@@ -69,7 +87,7 @@ const MessageModel = ({
   });
 
   const messages = userMessages ?? [];
-  console.log("the users",users)
+  console.log("the users", users);
 
   if (!isOpen) return null;
 
@@ -89,7 +107,6 @@ const MessageModel = ({
     );
 
     setMessage("");
-
 
     // TODO: send to backend here
   }
@@ -117,10 +134,11 @@ const MessageModel = ({
           <h2 className="text-white text-lg font-semibold p-4 border-b border-gray-800">
             Chats
           </h2>
-
+             
+             {/* handles the users info (lef side) when user clicks on his own profile messages icon */}
           {isLoadingUsers ? (
             <div className="p-4 text-white">Loading...</div>
-          ) : (users?.length == 0 ? (
+          ) : users?.length == 0 && !standAloneUser ? (
             <div className="p-4 text-white">No Chats Found</div>
           ) : (
             users?.map((user) => (
@@ -139,7 +157,27 @@ const MessageModel = ({
                 </p>
               </div>
             ))
-          ))}
+          )}
+
+          {/* handles the users info (lef side) when user clicks on other person's profile messages icon */}
+          {isLoadingStandAloneUser?(
+            <div className="p-4 text-white">Loading...</div>
+          ):standAloneUser?(
+ <div
+                key={standAloneUser.receiver}
+                onClick={() => setSelectedUser(standAloneUser)}
+                className="flex items-center gap-3 p-4 hover:bg-gray-800 cursor-pointer transition"
+              >
+                <img
+                  src={standAloneUser.receiverProfileImage}
+                  className="w-10 h-10 rounded-full"
+                  alt="profile"
+                />
+                <p className="text-white text-sm truncate">
+                  {standAloneUser.receiverName}
+                </p>
+              </div>
+          ):null}
         </div>
 
         {/* RIGHT: CHAT */}
@@ -172,14 +210,13 @@ const MessageModel = ({
 
           {/* MESSAGES */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            
             {/* in case no users */}
-            {
-              users?.length==0 && (
-                <div className="text-wrap text-gray-200">Find people and chat with them, all your chats will appear here</div>
-              )
-            }
-            
+            {users?.length == 0 && (
+              <div className="text-wrap text-gray-200">
+                Find people and chat with them, all your chats will appear here
+              </div>
+            )}
+
             {isLoadingMessages ? (
               <div className="w-full h-full flex justify-center items-center">
                 <Loader />

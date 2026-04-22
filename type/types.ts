@@ -169,7 +169,7 @@ export type UserType={
       receiver:string, //this is the userId of the person we are sending/receiving messages from
       receiverName:string, //this is the name of the person we are sending/receiving messages from
       receiverProfileImage:string, //this is the profile image of the person we are sending/receiving messages from
-      chatId:string, //this is the id of the chat between the current user and the receiver, it can be used to fetch messages between them
+      chatId?:string, //this is the id of the chat between the current user and the receiver, it can be used to fetch messages between them
       }
 
 export type MessageType={
